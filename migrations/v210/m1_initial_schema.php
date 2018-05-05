@@ -37,7 +37,7 @@ class m1_initial_schema extends migration
 			'add_tables' => array(
 				$this->table_prefix . 'privacy_lang' => array(
 					'COLUMNS'	=> array(
-						'privacy__id'        			=> array('UINT', null, 'auto_increment'),
+						'privacy_id'        			=> array('UINT', null, 'auto_increment'),
 						'privacy_lang_name'				=> array('VCHAR:40', ''),
 						'privacy_lang_description'		=> array('VCHAR:40', ''),
 						'privacy_lang_id'				=> array('VCHAR:10', ''),
