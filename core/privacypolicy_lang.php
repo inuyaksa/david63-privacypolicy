@@ -171,7 +171,8 @@ class privacypolicy_lang
 	public function get_text_names()
 	{
 		$sql = 'SELECT privacy_lang_name, privacy_lang_description
-			FROM ' . $this->privacy_lang_table;
+			FROM ' . $this->privacy_lang_table . '
+			ORDER BY privacy_lang_description ASC';
 
 		$result = $this->db->sql_query($sql);
 		$rows 	= $this->db->sql_fetchrowset($result);

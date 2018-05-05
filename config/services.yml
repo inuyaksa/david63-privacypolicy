@@ -86,6 +86,8 @@ services:
             - '@dbal.conn'
             - '@dispatcher'
             - '@profilefields.type_collection'
+            - '%core.root_path%'
+            - '%core.php_ext%'			
 
     david63.privacypolicy.core.privacypolicy_lang:
         class: david63\privacypolicy\core\privacypolicy_lang
