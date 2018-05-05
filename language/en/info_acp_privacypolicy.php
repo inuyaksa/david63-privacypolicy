@@ -37,19 +37,19 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'ACP_USER_UTILS'		=> 'User utilities',
+	'ACP_USER_UTILS'			=> 'User utilities',
 
-	'COOKIE_POLICY'			=> 'Privacy & Cookie policy',
-	'COOKIE_POLICY_LOG'		=> '<strong>Privacy policy settings updated</strong>',
+	'COOKIE_POLICY'				=> 'Privacy & Cookie policy',
 
-	'LOG_CURL_ERROR'		=> '<strong>cURL is not available on this server</strong>',
-	'LOG_IP_LOOKUP_ERROR'	=> '<strong>The IP lookup has failed</strong>',
-	'LOG_QUOTA_EXCEEDED'	=> '<strong>The hourly lookup quota has been exceeded</strong>',
-	'LOG_SERVER_ERROR'		=> '<strong>Could not determine IP address</strong>',
-
-	'PRIVACY_DATA'			=> 'Privacy data',
-	'PRIVACY_LIST'			=> 'Privacy list',
-	'PRIVACY_POLICY'		=> 'Privacy policy',
-	'PRIVACY_POLICY_MANAGE'	=> 'Privacy policy settings',
-	'POLICY_RESET_LOG'		=> '<strong>Policy acceptance reset</strong>',
+	'POLICY_RESET_LOG'			=> '<strong>Privacy policy acceptance reset</strong>',
+	'PRIVACY_DATA'				=> 'Privacy data',
+	'PRIVACY_EDIT_CREATED'		=> '%s created',
+	'PRIVACY_EDIT_UPDATED'		=> '%s updated',
+	'PRIVACY_LIST'				=> 'Privacy list',
+	'PRIVACY_POLICY'			=> 'Privacy policy',
+	'PRIVACY_POLICY_ADD_LOG'	=> '<strong>Privacy policy added</strong><br />» %s',
+	'PRIVACY_POLICY_EDIT'		=> 'Edit language data',
+	'PRIVACY_POLICY_EDIT_LOG'	=> '<strong>Privacy policy edited</strong><br />» %s',
+	'PRIVACY_POLICY_LOG'		=> '<strong>Privacy policy settings updated</strong>',
+	'PRIVACY_POLICY_MANAGE'		=> 'Privacy policy settings',
 ));

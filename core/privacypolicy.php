@@ -111,7 +111,7 @@ class privacypolicy
 		$this->db->sql_freeresult($result);
 
 		// Get the core cpf data fields
-		$pf_fields = $this->get_cpf_data();
+		$cpf_fields = $this->get_cpf_data();
 
 		// Get the CPF data for this user
 		$sql = $this->db->sql_build_query('SELECT', array(
@@ -129,19 +129,19 @@ class privacypolicy
 		));
 
 		$result 	= $this->db->sql_query($sql);
-		$pf_data	= $this->db->sql_fetchrow($result);
+		$cpf_data	= $this->db->sql_fetchrow($result);
 
 		$this->db->sql_freeresult($result);
 
-		foreach($pf_data as $key => $data)
+		foreach($cpf_data as $key => $data)
 		{
 			if ($data && $key != 'user_id')
 			{
-				$pf_data[$key] = $this->get_pf_data($data, $key);
+				$cpf_data[$key] = $this->get_pf_data($data, $key);
 			}
 		}
 
-		$new_array = array_merge_recursive($pf_fields, $pf_data);
+		$new_array = array_merge_recursive($cpf_fields, $cpf_data);
 
 		foreach($new_array as $key => $data)
 		{
@@ -185,7 +185,7 @@ class privacypolicy
 	 */
 	public function get_cpf_data()
 	{
-		$sql = 'SELECT pf.field_name, pl.lang_name, pl.lang_explain
+		$sql = 'SELECT pf.field_name, pl.lang_name
 			FROM ' . PROFILE_FIELDS_TABLE . ' pf, ' . PROFILE_LANG_TABLE . ' pl, ' . LANG_TABLE . " l
 			WHERE pf.field_id  = pl.field_id
 				AND pf.field_name LIKE '%phpbb%'

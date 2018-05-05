@@ -17,6 +17,7 @@ use \phpbb\db\driver\driver_interface;
 use \phpbb\template\template;
 use \phpbb\config\config;
 use \phpbb\language\language;
+use \david63\privacypolicy\core\privacypolicy_lang;
 
 class main_controller implements main_interface
 {
@@ -26,13 +27,13 @@ class main_controller implements main_interface
 	/** @var \phpbb\request\request */
 	protected $request;
 
-	/* @var \phpbb\controller\helper */
+	/** @var \phpbb\controller\helper */
 	protected $helper;
 
 	/** @var \phpbb\db\driver\driver_interface */
 	protected $db;
 
-	/* @var \phpbb\template\template */
+	/** @var \phpbb\template\template */
 	protected $template;
 
 	/** @var \phpbb\config\config */
@@ -47,30 +48,35 @@ class main_controller implements main_interface
 	/** @var string PHP extension */
 	protected $phpEx;
 
+	/** @var \david63\privacypolicy\core\privacypolicy_lang */
+	protected $privacypolicy_lang;
+
 	/**
 	* Constructor
 	*
-	* @param \phpbb\user				$user				User object
-	* @param \phpbb\request\request		$request			Request object
-	* @param \phpbb\controller\helper	$helper				Helper object
-	* @param phpbb_db_driver			$db					The db connection
-	* @param \phpbb\template\template	$template			Template object
-	* @param \phpbb\config\config		$config				Config object
-	* @param \phpbb\language\language	$language			Language object
-	* @param string						$phpbb_root_path	phpBB root path
-	* @param string						$php_ext            phpBB extension
+	* @param \phpbb\user									$user				User object
+	* @param \phpbb\request\request							$request			Request object
+	* @param \phpbb\controller\helper						$helper				Helper object
+	* @param phpbb_db_driver								$db					The db connection
+	* @param \phpbb\template\template						$template			Template object
+	* @param \phpbb\config\config							$config				Config object
+	* @param \phpbb\language\language						$language			Language object
+	* @param string											$phpbb_root_path	phpBB root path
+	* @param string											$php_ext            phpBB extension
+	* @param \david63\privacypolicy\core\privacypolicy_lang privacypolicy_lang  Methods for the extension
 	*/
-	public function __construct(user $user, request $request, helper $helper, driver_interface $db, template $template, config $config, language $language, $root_path, $php_ext)
+	public function __construct(user $user, request $request, helper $helper, driver_interface $db, template $template, config $config, language $language, $root_path, $php_ext, privacypolicy_lang $privacypolicy_lang)
 	{
-		$this->user			= $user;
-		$this->request		= $request;
-		$this->helper		= $helper;
-		$this->db			= $db;
-		$this->template		= $template;
-		$this->config		= $config;
-		$this->language		= $language;
-		$this->root_path	= $root_path;
-		$this->php_ext		= $php_ext;
+		$this->user					= $user;
+		$this->request				= $request;
+		$this->helper				= $helper;
+		$this->db					= $db;
+		$this->template				= $template;
+		$this->config				= $config;
+		$this->language	   			= $language;
+		$this->root_path			= $root_path;
+		$this->php_ext				= $php_ext;
+		$this->privacypolicy_lang 	= $privacypolicy_lang;
 	}
 
 	/**
@@ -115,7 +121,7 @@ class main_controller implements main_interface
 		}
 
 		$this->template->assign_vars(array(
-			'ACCEPT_MESSAGE'	=> $this->language->lang('PRIVACY_POLICY_ACCEPT', $this->config['sitename']),
+			'ACCEPT_MESSAGE'	=> $this->language->lang('PRIVACY_POLICY_TEXT', $this->config['sitename']) . $this->language->lang('PRIVACY_POLICY_ACCEPT'),
 			'U_ACTION'			=> $this->helper->route('david63_privacypolicy_acceptance'),
 		));
 
@@ -133,11 +139,15 @@ class main_controller implements main_interface
 		switch ($name)
 		{
 			case 'policy':
-				$cookie_message = $this->language->lang('COOKIE_TEXT', $this->config['sitename']);
+				$cookie_text 	= $this->privacypolicy_lang->get_text('cookie_policy', $this->user->data['user_lang']);
+				$cookie_message	= generate_text_for_display($cookie_text['privacy_lang_text'], $cookie_text['privacy_text_bbcode_uid'], $cookie_text['privacy_text_bbcode_bitfield'], 7);
+
 				if ($this->config['privacy_policy_enable'])
 				{
-					$cookie_message .= $this->language->lang('PRIVACY_POLICY', $this->config['sitename']);
+					$cookie_text 	= $this->privacypolicy_lang->get_text('privacy_policy', $this->user->data['user_lang']);
+					$cookie_message .= generate_text_for_display($cookie_text['privacy_lang_text'], $cookie_text['privacy_text_bbcode_uid'], $cookie_text['privacy_text_bbcode_bitfield'], 7);
 				}
+
 				$this->template->assign_var('COOKIE_MESSAGE', $cookie_message);
 				$output_name	= $this->language->lang('COOKIE_POLICY');
 				$html_name 		= 'cookie_body.html';

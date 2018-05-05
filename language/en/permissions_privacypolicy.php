@@ -3,7 +3,7 @@
 *
 * @package Privacy Policy Extension
 * @copyright (c) 2018 david63
-* * @license GNU General Public License, version 2 (GPL-2.0)
+* @license GNU General Public License, version 2 (GPL-2.0)
 *
 */
 
@@ -20,7 +20,7 @@ if (empty($lang) || !is_array($lang))
 	$lang = array();
 }
 
-/// DEVELOPERS PLEASE NOTE
+// DEVELOPERS PLEASE NOTE
 //
 // All language files should use UTF-8 as their encoding and the files must not contain a BOM.
 //
@@ -37,35 +37,8 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'ACCEPT_DATE'			=> 'Acceptance date',
-	'ALL'					=> 'All',
-
-	'CLEAR_FILTER'			=> 'Clear filter',
-
-	'FILTER_BY'				=> 'Filter by',
-
-	'GO'					=> 'Go',
-
-	'HASH'					=> '#',
-
-	'LAST_VISIT'			=> 'Last visit',
-
-	'PAGE_NUMBER'			=> 'Page',
-	'PRIVACY_LIST_EXPLAIN'	=> 'Here is a list of all the board members and the date on which they have accepted the Privacy Policy of this board.',
-
-	'REG_DATE'				=> 'Registration date',
-
-	'SORT_BY'				=> 'Sort by',
-
-	'TOTAL_USERS'			=> 'Total',
-
-	'USER_ID'				=> 'User ID',
-	'USERNAME'				=> 'Username',
-
-	'VERSION'				=> 'Version',
-
-	// Translators - set these to whatever is most appropriate in your language
-	// These are used to populate the filter keys
-	'START_CHARACTER'	=> 'A',
-	'END_CHARACTER'		=> 'Z',
+	'ACL_A_PRIVACY_VIEW'		=> 'Can view user’s privacy data',
+	'ACL_U_PRIVACY_VIEW'		=> 'Can view privacy data',
 ));
+
+?>
