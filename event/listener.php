@@ -98,27 +98,8 @@ class listener implements EventSubscriberInterface
 			'core.ucp_register_agreement_modify_template_data'	=> 'load_modified_agreement',
 			'core.ucp_register_user_row_after'					=> 'add_acceptance_date',
 			'core.modify_text_for_display_after'				=> 'insert_sitename',
-			'core.login_box_redirect'							=> array(
-				'privacy_redirect',
-				90, // Needed to allow this to run before any other extension.
-			),
+			'core.update_session_after'							=> 'privacy_redirect',
 		);
-	}
-
-	/**
-	* Replace the placeholder with the sitename
-	*
-	* @param $event
-	*
-	* @return array
-	* @static
-	* @access public
-	*/
-	public function insert_sitename($event)
-	{
-		$text = $event['text'];
-		$text = str_replace("%sitename%", $this->config['sitename'], $text);
-		$event->offsetSet('text', $text);
 	}
 
 	/**
@@ -223,16 +204,13 @@ class listener implements EventSubscriberInterface
 	*/
 	public function load_language_on_setup($event)
 	{
-		// Only load the language if it is required
-		if ($this->config['cookie_policy_enable'] || $this->config['cookie_show_policy'] || $this->config['privacy_policy_enable'])
-		{
-			$lang_set_ext	= $event['lang_set_ext'];
-			$lang_set_ext[]	= array(
-				'ext_name' => 'david63/privacypolicy',
-				'lang_set' => 'privacypolicy',
-			);
-			$event['lang_set_ext'] = $lang_set_ext;
-		}
+		// load the language files
+		$lang_set_ext	= $event['lang_set_ext'];
+		$lang_set_ext[]	= array(
+			'ext_name' => 'david63/privacypolicy',
+			'lang_set' => 'privacypolicy',
+		);
+		$event['lang_set_ext'] = $lang_set_ext;
 	}
 
 	/**
@@ -248,7 +226,9 @@ class listener implements EventSubscriberInterface
 		{
 			$template_vars = $event['template_vars'];
 
-			$event->update_subarray('template_vars', 'L_TERMS_OF_USE', $this->user->lang('TERMS_OF_USE_CONTENT', $this->config['sitename'], generate_board_url()) . $this->privacypolicy_lang->get_lang_data('terms_of_use_2'));
+				$privacy_text = $this->privacypolicy_lang->get_text('terms_of_use_2', $this->user->data['user_lang']);
+
+			$event->update_subarray('template_vars', 'L_TERMS_OF_USE', $this->user->lang('TERMS_OF_USE_CONTENT', $this->config['sitename'], generate_board_url()) . generate_text_for_display($privacy_text['privacy_lang_text'], $privacy_text['privacy_text_bbcode_uid'], $privacy_text['privacy_text_bbcode_bitfield'], 7));
 		}
 	}
 
@@ -272,6 +252,22 @@ class listener implements EventSubscriberInterface
 	}
 
 	/**
+	* Replace the placeholder with the sitename
+	*
+	* @param $event
+	*
+	* @return array
+	* @static
+	* @access public
+	*/
+	public function insert_sitename($event)
+	{
+		$text = $event['text'];
+		$text = str_replace("%sitename%", $this->config['sitename'], $text);
+		$event->offsetSet('text', $text);
+	}
+
+	/**
 	* Redirect to the privacy policy acceptance page
 	*
 	* @param object $event The event object
@@ -280,7 +276,7 @@ class listener implements EventSubscriberInterface
 	*/
 	public function privacy_redirect($event)
 	{
-	   if ($this->config['privacy_policy_enable'] && $this->config['privacy_policy_force'] && $this->user->data['user_accept_date'] == 0)
+	   if ($this->config['privacy_policy_enable'] && $this->config['privacy_policy_force'] && $this->user->data['user_accept_date'] == 0 && $this->user->data['user_id'] != ANONYMOUS)
 		{
 			redirect($this->helper->route('david63_privacypolicy_acceptance'));
 		}

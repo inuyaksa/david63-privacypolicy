@@ -108,6 +108,12 @@ class privacypolicy_lang
 		return $row['privacy_lang_text'];
 	}
 
+	/**
+	* Validate that a user's language exists
+	*
+	* @return $row
+	* @access public
+	*/
 	public function validate_lang($lang_name, $lang_id)
 	{
 		$sql = 'SELECT privacy_lang_text
@@ -121,22 +127,31 @@ class privacypolicy_lang
 		return $row;
 	}
 
-	public function get_text($lang_name, $lang_id)
+	/**
+	* Get the text data for a policy
+	*
+	* @return $row
+	* @access public
+	*/
+	public function get_text($lang_name, $lang_id, $validate = true)
 	{
-		// Does the language/text file combination exist?
-		$lang_valid = $this->validate_lang($lang_name, $lang_id);
-		if (!$lang_valid)
+		if ($validate)
 		{
-			// Does board default language/text file combination exist?
-			$lang_valid = $this->validate_lang($lang_name, $this->config['default_lang']);
-			if ($lang_valid)
+			// Does the language/text file combination exist?
+			$lang_valid = $this->validate_lang($lang_name, $lang_id);
+			if (!$lang_valid)
 			{
-				$lang_id = $this->config['default_lang'];
-			}
-			else
-			{
-				// Use 'en' language
-				$lang_id = 'en';
+				// Does board default language/text file combination exist?
+				$lang_valid = $this->validate_lang($lang_name, $this->config['default_lang']);
+				if ($lang_valid)
+				{
+					$lang_id = $this->config['default_lang'];
+				}
+				else
+				{
+					// Use 'en' language
+					$lang_id = 'en';
+				}
 			}
 		}
 
@@ -153,6 +168,12 @@ class privacypolicy_lang
 		return $row;
 	}
 
+	/**
+	* Get the description of a policy
+	*
+	* @return $row['privacy_lang_description']
+	* @access public
+	*/
 	public function get_description($lang_name, $lang_id)
 	{
 		$sql = 'SELECT privacy_lang_description
@@ -168,6 +189,12 @@ class privacypolicy_lang
 		return $row['privacy_lang_description'];
 	}
 
+	/**
+	* Get the policy names for the select
+	*
+	* @return null
+	* @access public
+	*/
 	public function get_text_names()
 	{
 		$sql = 'SELECT privacy_lang_name, privacy_lang_description
@@ -188,6 +215,12 @@ class privacypolicy_lang
 		}
 	}
 
+	/**
+	* Get the board languages for the select
+	*
+	* @return null
+	* @access public
+	*/
 	public function get_languages()
 	{
 		$sql = 'SELECT lang_iso, lang_local_name

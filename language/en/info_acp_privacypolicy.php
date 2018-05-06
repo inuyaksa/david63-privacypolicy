@@ -43,13 +43,13 @@ $lang = array_merge($lang, array(
 
 	'POLICY_RESET_LOG'			=> '<strong>Privacy policy acceptance reset</strong>',
 	'PRIVACY_DATA'				=> 'Privacy data',
-	'PRIVACY_EDIT_CREATED'		=> '%s created',
-	'PRIVACY_EDIT_UPDATED'		=> '%s updated',
+	'PRIVACY_EDIT_CREATED'		=> 'New privacy policy created',
+	'PRIVACY_EDIT_UPDATED'		=> 'Privacy policy updated',
 	'PRIVACY_LIST'				=> 'Privacy list',
 	'PRIVACY_POLICY'			=> 'Privacy policy',
-	'PRIVACY_POLICY_ADD_LOG'	=> '<strong>Privacy policy added</strong><br />» %s',
+	'PRIVACY_POLICY_ADD_LOG'	=> '<strong>Privacy policy added</strong>',
 	'PRIVACY_POLICY_EDIT'		=> 'Edit language data',
-	'PRIVACY_POLICY_EDIT_LOG'	=> '<strong>Privacy policy edited</strong><br />» %s',
+	'PRIVACY_POLICY_EDIT_LOG'	=> '<strong>Privacy policy edited</strong>',
 	'PRIVACY_POLICY_LOG'		=> '<strong>Privacy policy settings updated</strong>',
 	'PRIVACY_POLICY_MANAGE'		=> 'Privacy policy settings',
 ));

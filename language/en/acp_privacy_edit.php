@@ -38,22 +38,22 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	'COOKIE_EDIT_EXPLAIN'				=> 'Here you can customise the board’s Cookie Policy.',
-	'COOKIE_EDIT_EXPLAIN_NEW'			=> 'Add a Cookie Policy.',
+	'COOKIE_EDIT_EXPLAIN_NEW'			=> 'Here you can add a new Cookie Policy.<br />The Cookie Policy is displayed when the Cookie Policy is enabled and a user clicks on the “Policies” link in the bottom navigation bar.',
 
 	'POLICY_DESCRIPTION'				=> 'Policy file name',
-	'POLICY_DESCRIPTION_EXPLAIN'		=> 'The name of this policy file - this should be translated into the required language.',
+	'POLICY_DESCRIPTION_EXPLAIN'		=> 'The display name of this policy file and should be translated into the required language.',
 	'POLICY_EDIT'						=> 'Policy Files Editor',
-	'POLICY_EDIT_EXPLAIN'				=> 'Here you can select which policy text files you wish to edit, or create a new text file in a specified language.',
+	'POLICY_EDIT_EXPLAIN'				=> 'Here you can select which policy text files you wish to edit, or create a new policy text file in a specified language.',
 	'POLICY_FILE_OPTIONS'	   			=> 'Policy file options',
 	'POLICY_SELECT_FILE'		   		=> 'Select file',
 	'POLICY_SELECT_LANGUAGE'			=> 'Select language',
 	'PRIVACY_ACCEPT_EDIT_EXPLAIN'		=> 'Here you can customise the board’s Privacy Acceptance Policy.',
-	'PRIVACY_ACCEPT_EDIT_EXPLAIN_NEW'	=> 'Add a new Privacy Acceptance Policy.',
+	'PRIVACY_ACCEPT_EDIT_EXPLAIN_NEW'	=> 'Here you can add a new Privacy Acceptance Policy.<br />The Privacy Acceptance policy is displayed after the Privacy Policy.',
 	'PRIVACY_EDIT_EXPLAIN'				=> 'Here you can customise the board’s Privacy Policy.',
-	'PRIVACY_EDIT_EXPLAIN_NEW'			=> 'Add a new Privacy Policy.',
+	'PRIVACY_EDIT_EXPLAIN_NEW'			=> 'Here you can add a new Privacy Policy.<br />The Privacy Policy is the main policy describing the privacy rules of this board.',
 
 	'TERM_OF_USE_EDIT_EXPLAIN'			=> 'Here you can customise the board’s additional Terms of Use Policy.',
-	'TERM_OF_USE_EDIT_EXPLAIN_NEW'		=> 'Add a new additional Terms of Use Policy.',
+	'TERM_OF_USE_EDIT_EXPLAIN_NEW'		=> 'Here you can add a new additional Terms of Use Policy.<br />This is displayed after the main Terms of Use when a new user wishes to rgister on the board.',
 
 	'SITENAME'							=> 'Sitename',
 	'SITENAME_HELP'						=> 'Insert the sitename placeholder (%sitename%)',

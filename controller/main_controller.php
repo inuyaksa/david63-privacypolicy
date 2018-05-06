@@ -120,8 +120,11 @@ class main_controller implements main_interface
 			}
 		}
 
+		$privacy_text 	= $this->privacypolicy_lang->get_text('privacy_policy', $this->user->data['user_lang']);
+		$privacy_accept	= $this->privacypolicy_lang->get_text('privacy_policy_accept', $this->user->data['user_lang']);
+
 		$this->template->assign_vars(array(
-			'ACCEPT_MESSAGE'	=> $this->language->lang('PRIVACY_POLICY_TEXT', $this->config['sitename']) . $this->language->lang('PRIVACY_POLICY_ACCEPT'),
+			'ACCEPT_MESSAGE'	=> generate_text_for_display($privacy_text['privacy_lang_text'], $privacy_text['privacy_text_bbcode_uid'], $privacy_text['privacy_text_bbcode_bitfield'], 7) . generate_text_for_display($privacy_accept['privacy_lang_text'], $privacy_accept['privacy_text_bbcode_uid'], $privacy_accept['privacy_text_bbcode_bitfield'], 7),
 			'U_ACTION'			=> $this->helper->route('david63_privacypolicy_acceptance'),
 		));
 

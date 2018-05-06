@@ -35,10 +35,12 @@ class m3_initial_permissions extends migration
 	{
 		return array(
 			// Add the permissions
+			array('permission.add', array('a_privacy_manage', true)),
 			array('permission.add', array('a_privacy_view', true)),
 			array('permission.add', array('u_privacy_view', true)),
 
 			// Set permissions
+			array('permission.permission_set', array('ROLE_ADMIN_FULL', 'a_privacy_manage', 'role', true)),
 			array('permission.permission_set', array('ROLE_ADMIN_FULL', 'a_privacy_view', 'role', true)),
 			array('permission.permission_set', array('ROLE_ADMIN_STANDARD', 'a_privacy_view', 'role', true)),
 			array('permission.permission_set', array('ROLE_USER_FULL', 'u_privacy_view', 'role', true)),

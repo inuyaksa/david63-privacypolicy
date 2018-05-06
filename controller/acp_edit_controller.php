@@ -21,7 +21,7 @@ use \david63\privacypolicy\core\privacypolicy_lang;
 use \david63\privacypolicy\ext;
 
 /**
- * Admin controller
+ * ACP edit controller
  */
 class acp_edit_controller implements acp_edit_interface
 {
@@ -182,7 +182,7 @@ class acp_edit_controller implements acp_edit_interface
 			if ($this->request->is_set_post('submit_text'))
 			{
 				// Does this text exist? If not then create it
-				if (!$this->privacypolicy_lang->get_text($lang_name, $lang_id))
+				if (!$this->privacypolicy_lang->get_text($lang_name, $lang_id, false))
 				{
 					$privacy_desc 	= $this->privacypolicy_lang->get_description($lang_name, 'en');
 					$get_text 		= false;
@@ -221,11 +221,11 @@ class acp_edit_controller implements acp_edit_interface
 					$this->db->sql_query($sql);
 
 					// Add option settings change action to the admin log
-					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PRIVACY_POLICY_ADD_LOG', time(), array($privacy_desc));
+					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PRIVACY_POLICY_ADD_LOG');
 
 					// Settings have been updated and logged
 					// Confirm this to the user and provide link back to previous page
-					trigger_error($this->language->lang('PRIVACY_EDIT_CREATED', $privacy_desc) . adm_back_link($this->u_action));
+					trigger_error($this->language->lang('PRIVACY_EDIT_CREATED') . adm_back_link($this->u_action));
 				}
 				else
 				{
@@ -243,11 +243,11 @@ class acp_edit_controller implements acp_edit_interface
 					$this->db->sql_query($sql);
 
 					// Add option settings change action to the admin log
-					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PRIVACY_POLICY_EDIT_LOG', time(), array($privacy_desc));
+					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'PRIVACY_POLICY_EDIT_LOG');
 
 					// Settings have been updated and logged
 					// Confirm this to the user and provide link back to previous page
-					trigger_error($this->language->lang('PRIVACY_EDIT_UPDATED', $privacy_desc) . adm_back_link($this->u_action));
+					trigger_error($this->language->lang('PRIVACY_EDIT_UPDATED') . adm_back_link($this->u_action));
 				}
 			}
 

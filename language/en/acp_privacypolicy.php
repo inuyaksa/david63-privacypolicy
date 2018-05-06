@@ -97,7 +97,7 @@ $lang = array_merge($lang, array(
 	'PRIVACY_POLICY_FORCE'					=> 'Force Privacy acceptance',
 	'PRIVACY_POLICY_FORCE_EXPLAIN'			=> 'Force all users on this board to accept the GDPR.',
 	'PRIVACY_POLICY_RESET'					=> 'Reset policy acceptance',
-	'PRIVACY_POLICY_RESET_EXPLAIN'			=> 'Reset the policy acceptance in order that members will have to accept the Privacy policy again.<br />Once this has been run then you will need to set “<strong>Force Privacy acceptance</strong>” to “<strong>Yes</strong>”<br />Setting this option to “Yes” will also reset the phpBB cookies forcing all members to sign in again.',
+	'PRIVACY_POLICY_RESET_EXPLAIN'			=> 'Reset the policy acceptance in order that members will have to accept the Privacy policy again.<br />Once this has been run then you will need to set “<strong>Force Privacy acceptance</strong>” to “<strong>Yes</strong>”.',
 
 	'VERSION'								=> 'Version',
 ));

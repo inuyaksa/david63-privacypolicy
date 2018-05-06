@@ -112,9 +112,6 @@ class acp_manage_controller implements acp_manage_interface
 
 				$this->db->sql_query($sql);
 
-				// Force users to login by changing the cookie
-				$this->config->set('cookie_name', 'phpbb_' . substr(md5(rand()), 0, 5));
-
 				// Add action to the admin log
 				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'POLICY_RESET_LOG');
 

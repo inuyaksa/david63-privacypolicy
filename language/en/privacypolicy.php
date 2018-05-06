@@ -53,5 +53,7 @@ $lang = array_merge($lang, array(
 
 	'DECLINE' 				=> 'I do not accept this policy',
 
+	'HR_BBCODE_HELPLINE' 	=> 'Insert a horizontal line',
+
 	'POLICY_ACCEPT' 		=> 'Accept privacy policy',
 ));

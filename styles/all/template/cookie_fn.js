@@ -9,19 +9,10 @@
 
 		var ua = window.navigator.userAgent;
 
-
-
-		//alert('IE ' + detectIE());
-
     	if (cookieAccept != true)
 		{
 			$('.cookieAcceptBox').addClass('cookie-box');
 			$('.cookieAcceptBox').html(cookieText + '</a> <a href="#">' + acceptText + '</a>');
-			//$('.cookieAcceptBox').html(cookieText + '<a href="' + cookiePage + '">' + cookieLink + '</a> <a href="#">' + acceptText + '</a>');
-
-
-
-
 
 			// Set the css elements from the variables
 			$('.cookieAcceptBox').css({

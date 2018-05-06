@@ -35,7 +35,36 @@ class m2_initial_data extends migration
 	{
 		return array(
 			array('custom', array(array($this, 'insert_privacy_lang_data'))),
+			array('custom', array(array($this, 'insert_privacy_bbcode_data'))),
 		);
+	}
+
+	/**
+	* Custom function to install the privacy bbcode data in the bbcode table in the database
+	*
+	* @return null
+	* @access public
+	*/
+	public function insert_privacy_bbcode_data()
+	{
+		// Define bbcode data
+		$privacy_bbcode_data = array(
+			array(
+				'bbcode_id'				=> 900,
+				'bbcode_tag' 			=> 'hr',
+				'bbcode_helpline'		=> 'HR_BBCODE_HELPLINE',
+				'display_on_posting'	=> 1,
+				'bbcode_match'			=> '[hr][/hr]',
+				'bbcode_tpl'			=> '<hr style="height: 10px; border: 0; box-shadow: 0 10px 10px -10px #8c8b8b inset;">',
+				'first_pass_match'		=> '!\[hr\]\[/hr\]!i',
+				'first_pass_replace'	=> '[hr:$uid][/hr:$uid]',
+				'second_pass_match'		=> '[hr:$uid][/hr:$uid]',
+				'second_pass_replace'	=> '',
+			),
+		);
+
+		// Insert the data
+		$this->db->sql_multi_insert($this->table_prefix . 'bbcodes', $privacy_bbcode_data);
 	}
 
 	/**
@@ -52,8 +81,7 @@ class m2_initial_data extends migration
 				'privacy_lang_name' 			=> 'privacy_policy',
 				'privacy_lang_description'		=> 'Privacy policy',
 				'privacy_lang_id' 				=> 'en',
-				'privacy_lang_text' 			=> '<r>.<br/>
-.<br/>
+				'privacy_lang_text' 			=> '<r><HR><s>[hr]</s><e>[/hr]</e></HR>
 <SIZE size="150"><s>[size=150]</s><B><s>[b]</s>General Data Protection Regulation - 2018 (GDPR)<e>[/b]</e></B><e>[/size]</e></SIZE><br/>
 	<br/>
 To comply with the GDPR you need to be made aware that your %sitename% account will, at a bare minimum, contain a uniquely identifiable name (hereinafter “your user name”), a personal password used for logging into your account (hereinafter “your password”) and a personal, valid email address (hereinafter “your email”). Your information for your account at %sitename% is protected by data-protection laws applicable in the country that hosts us. Any information beyond your user name, your password, and your email address required by %sitename% during the registration process is either mandatory or optional, at the discretion of %sitename%. In all cases, you have the option of what information in your account is publicly displayed. Furthermore, within your account, you have the option to opt-in or opt-out of automatically generated emails.<br/>
@@ -72,9 +100,8 @@ The only other information about you is that which you decide to post in the for
 				'privacy_lang_name' 			=> 'privacy_policy_accept',
 				'privacy_lang_description'		=> 'Privacy acceptance',
 				'privacy_lang_id' 				=> 'en',
-				'privacy_lang_text' 			=> '<t>.<br/>
-.<br/>
-By clicking on the “I accept this policy” button below your acceptance of these terms will be recorded. If you click on the “I do not accept this policy” button below then you will be logged out of this board.</t>',
+				'privacy_lang_text' 			=> '<r><HR><s>[hr]</s><e>[/hr]</e></HR>
+By clicking on the “I accept this policy” button below your acceptance of these terms will be recorded. If you click on the “I do not accept this policy” button below then you will be logged out of this board.</r>',
 				'privacy_text_bbcode_uid'		=> '',
 				'privacy_text_bbcode_bitfield'	=> '',
 				'privacy_text_bbcode_options'	=> 7,
@@ -84,7 +111,8 @@ By clicking on the “I accept this policy” button below your acceptance of th
 				'privacy_lang_name' 			=> 'terms_of_use_2',
 				'privacy_lang_description'		=> 'Terms of use (2)',
 				'privacy_lang_id' 				=> 'en',
-				'privacy_lang_text' 			=> '<r><B><s>[b]</s><SIZE size="150"><s>[size=150]</s>GDPR<e>[/size]</e></SIZE><e>[/b]</e></B><br/>
+				'privacy_lang_text' 			=> '<r><HR><s>[hr]</s><e>[/hr]</e></HR>
+<B><s>[b]</s><SIZE size="150"><s>[size=150]</s>GDPR<e>[/size]</e></SIZE><e>[/b]</e></B><br/>
 <br/>
 To comply with the EU GDPR (2018) you need to be made aware of the following.<br/>
 	<br/>
