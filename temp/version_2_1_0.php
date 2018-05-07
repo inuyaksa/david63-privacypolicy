@@ -22,7 +22,6 @@ class version_2_1_0 extends migration
 		$update_data[] = array('config.add', array('cookie_box_bdr_width', 1));
 		$update_data[] = array('config.add', array('cookie_box_bg_colour', '#00608F'));
 		$update_data[] = array('config.add', array('cookie_box_href_colour', '#FFFFFF'));
-		$update_data[] = array('config.add', array('cookie_box_position', 0));
 		$update_data[] = array('config.add', array('cookie_box_txt_colour', '#DBDB00'));
 		$update_data[] = array('config.add', array('cookie_custom_page', 0));
 		$update_data[] = array('config.add', array('cookie_custom_page_corners', 1));
@@ -39,6 +38,17 @@ class version_2_1_0 extends migration
 		$update_data[] = array('config.add', array('privacy_policy_enable', 0));
 		$update_data[] = array('config.add', array('privacy_policy_force', 0));
 		$update_data[] = array('config.add', array('privacy_policy_reset', 0));
+
+		// Add the permissions
+		$update_data[] = array('permission.add', array('a_privacy_view', true));
+		$update_data[] = array('permission.add', array('u_privacy_view', true));
+
+		$update_data[] = array('permission.permission_set', array('ROLE_ADMIN_FULL', 'a_privacy_view', 'role', true));
+		$update_data[] = array('permission.permission_set', array('ROLE_ADMIN_STANDARD', 'a_privacy_view', 'role', true));
+		$update_data[] = array('permission.permission_set', array('ROLE_USER_FULL', 'u_privacy_view', 'role', true));
+		$update_data[] = array('permission.permission_set', array('ROLE_USER_STANDARD', 'u_privacy_view', 'role', true));
+		$update_data[] = array('permission.permission_set', array('REGISTERED', 'u_privacy_view', 'group', true));
+		$update_data[] = array('permission.permission_set', array('BOTS', 'u_privacy_view', 'group', false));
 
 		// Add the ACP modules
 		$update_data[] = array('module.add', array('acp', 'ACP_CAT_DOT_MODS', 'PRIVACY_POLICY'));
