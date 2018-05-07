@@ -290,7 +290,7 @@ class listener implements EventSubscriberInterface
 	}
 
 	/**
-	* Remove the "hr" tag unless the user has permissions
+	* Remove the "hr" tag unless the user has permissions and is in the ACP
 	*
 	* @param object $event The event object
 	* @return null
@@ -298,7 +298,7 @@ class listener implements EventSubscriberInterface
 	*/
 	public function display_bbcode($event)
 	{
-		if (!$this->auth->acl_get('a_privacy_manage'))
+		if (!$this->auth->acl_get('a_privacy_manage') || !strpos($this->request->server('PHP_SELF'), 'adm'))
 		{
 			$sql_ary = $event['sql_ary'];
 			$sql_ary = str_replace('b.display_on_posting = 1', 'b.display_on_posting = 1 AND b.bbcode_tag <> "hr"', $sql_ary);
