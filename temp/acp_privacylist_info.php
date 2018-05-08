@@ -17,7 +17,7 @@ class acp_privacylist_info
 			'filename'	=> '\david63\privacypolicy\acp\acp_privacylist_module',
 			'title'		=> 'PRIVACY_POLICY',
 			'modes'		=> array(
-				'main'	=> array('title' => 'PRIVACY_LIST', 'auth' => 'ext_david63/privacypolicy && acl_a_user', 'cat' => array('PRIVACY_LIST')),
+				'main'	=> array('title' => 'PRIVACY_LIST', 'auth' => 'ext_david63/privacypolicy && acl_a_privacy_view', 'cat' => array('PRIVACY_LIST')),
 			),
 		);
 	}
