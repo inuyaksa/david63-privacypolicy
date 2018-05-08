@@ -11,7 +11,7 @@ namespace david63\privacypolicy\migrations\v210;
 
 use \phpbb\db\migration\migration;
 
-class m6_bbcodes extends migration
+class m7_bbcodes extends migration
 {
 	/**
 	* Assign migration file dependencies for this migration
