@@ -26,3 +26,11 @@
 	display: block;
 	text-align: center;
 }
+
+.ip-list {
+	height: auto;
+	max-height: 200px;
+	width: 120px;
+	border: 1px solid #ccc;
+	overflow-y: auto;
+}

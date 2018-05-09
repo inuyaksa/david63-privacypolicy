@@ -1,4 +1,5 @@
 {% include 'ucp_header.html' %}
+{% INCLUDECSS '@david63_privacypolicy/cookie.css' %}
 
 <h2>
 	{{ lang('UCP_PRIVACY_TITLE') }}
@@ -22,7 +23,7 @@
 		{% endfor %}
 		{% EVENT david63_privacypolicy_ucp_cpf_after %}
 		<dt>{{ lang('REG_IP') }}{{ lang('COLON') }}</dt><dd>{{ REG_IP }}</dd>
-		<dt>{{ lang('USER_IPS') }}{{ lang('COLON') }}</dt><dd>{{ USER_IPS }}</dd>
+		<dt>{{ lang('USER_IPS') }}{{ lang('COLON') }}</dt><dd><div class="ip-list">{{ USER_IPS }}</div></dd>
 		{% EVENT david63_privacypolicy_ucp_ip_after %}
 		<dt>{{ lang('YOUR_POSTS_EXPLAIN') }}{{ lang('COLON') }}</dt><dd><a href="{{ U_SEARCH_SELF }}">{{ lang('YOUR_POSTS') }}</a></dd>
 	</dl>

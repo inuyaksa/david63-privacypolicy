@@ -365,3 +365,14 @@ input.button2 {
 	text-decoration: none;
 	padding: 0.2em
 }
+
+/* ---------
+Privacy IP list
+--------- */
+.ip-list {
+	height: auto;
+	max-height: 200px;
+	width: 120px;
+	border: 1px solid #ccc;
+	overflow-y: auto;
+}
