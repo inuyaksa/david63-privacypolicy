@@ -145,7 +145,7 @@ class acp_data_controller implements acp_data_interface
 				USERS_TABLE	=> 'u',
 			),
 			'WHERE'		=> 'u.user_type <> 2' . $filter_by,
-			'ORDER_BY'	=> ($sort_key == '') ? 'u.username_clean' : $order_ary[$sort_key],
+			'ORDER_BY'	=> ($sort_key == '') ? 'u.username_clean ASC' : $order_ary[$sort_key] . ', u.username_clean ASC',
 		));
 
 		$result = $this->db->sql_query_limit($sql, $this->config['privacy_policy_list_lines'], $start);
