@@ -372,7 +372,8 @@ Privacy IP list
 .ip-list {
 	height: auto;
 	max-height: 200px;
-	width: 120px;
+	width: 150px;
 	border: 1px solid #ccc;
 	overflow-y: auto;
+	font-size: 11px
 }

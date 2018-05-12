@@ -106,54 +106,44 @@ class privacypolicy
 		);
 		extract($this->dispatcher->trigger_event('david63.privacypolicy.add_data', compact($vars)));
 
+		// Format the date of birth
+		$birthday	= explode('-', $row['user_birthday']);
+		$birthdate	= '';
+		if ($birthday[0] > 0 && $birthday[1] > 0)
+		{
+			$birthdate = $birthday[0] . ' ' . $this->language->lang_raw('priv_months')[$birthday[1]];
+			if ($birthday[2] > 0)
+			{
+				$birthdate .= ' ' . $birthday[2];
+			}
+		}
+
 		// Set output vars for display in the template
 		$this->template->assign_vars(array(
 			'ACCEPT_DATE'				=> ($row['user_accept_date'] > 0) ? $this->user->format_date($row['user_accept_date']) : $this->language->lang('NOT_ACCEPTED'),
 			'BANNER'					=> $this->language->lang('DETAILS_FOR', $row['username']),
-			'BIRTHDAY'					=> ($row['user_birthday']) ? $row['user_birthday'] : $this->language->lang('NO_BIRTHDAY'),
+ 			'BIRTHDAY'					=> ($birthdate) ? $birthdate : $this->language->lang('NO_BIRTHDAY'),
+
 			'EMAIL'						=> $row['user_email'],
+
 			'PRIVACY_POLICY_VERSION'	=> ext::PRIVACY_POLICY_VERSION,
+
 			'REG_DATE'					=> $this->user->format_date($row['user_regdate']),
 			'REG_IP'					=> $row['user_ip'],
-			'USER'						=> $row['username'],
 
+			'USER'						=> $row['username'],
 			'U_SEARCH_SELF'				=> append_sid("{$this->root_path}search.$this->phpEx", 'search_id=egosearch'),
 		));
 
 		$this->db->sql_freeresult($result);
 
-		// Get the core cpf data fields
-		$cpf_fields = $this->get_cpf_data();
+		// Get the core CPF data fields
+		$cpf_fields = $this->get_cpf_fields();
 
 		// Get the CPF data for this user
-		$sql = $this->db->sql_build_query('SELECT', array(
-			'SELECT'	=> 'pfd.*',
-			'FROM'		=> array(
-				USERS_TABLE => 'u',
-			),
-			'LEFT_JOIN'	=> array(
-				array(
-					'FROM'	=> array(PROFILE_FIELDS_DATA_TABLE	=> ' pfd',),
-					'ON'	=> 'u.user_id = pfd.user_id',
-				),
-			),
-			'WHERE' => "u.user_id = '" . $user_id . "'",
-		));
+		$cpf_user_data = $this->get_cpf_user_data($user_id);
 
-		$result 	= $this->db->sql_query($sql);
-		$cpf_data	= $this->db->sql_fetchrow($result);
-
-		$this->db->sql_freeresult($result);
-
-		foreach($cpf_data as $key => $data)
-		{
-			if ($data && $key != 'user_id')
-			{
-				$cpf_data[$key] = $this->get_pf_data($data, $key);
-			}
-		}
-
-		$new_array = array_merge_recursive($cpf_fields, $cpf_data);
+		$new_array = array_merge_recursive($cpf_fields, $cpf_user_data);
 
 		foreach($new_array as $key => $data)
 		{
@@ -170,7 +160,7 @@ class privacypolicy
 		// Get the IPs that this user has used
 		$sql = 'SELECT poster_ip
 			FROM ' . POSTS_TABLE . '
-			WHERE poster_id = ' . $this->user->data['user_id'] . "
+			WHERE poster_id = ' . $user_id . "
 			GROUP BY poster_ip";
 
 		$result = $this->db->sql_query($sql);
@@ -190,17 +180,59 @@ class privacypolicy
 	}
 
 	/**
-	 * Get a list of the phpBB core cpfs
+	 * Get an array of the user's CPF data
+	 *
+	 * @param $user_id
+	 *
+	 * @return array $cpf_user_data
+	 * @access public
+	 */
+	public function get_cpf_user_data($user_id)
+	{
+		$sql = $this->db->sql_build_query('SELECT', array(
+			'SELECT'	=> 'pfd.*',
+			'FROM'		=> array(
+				USERS_TABLE => 'u',
+			),
+			'LEFT_JOIN'	=> array(
+				array(
+					'FROM'	=> array(PROFILE_FIELDS_DATA_TABLE	=> ' pfd',),
+					'ON'	=> 'u.user_id = pfd.user_id',
+				),
+			),
+			'WHERE' => "u.user_id = '" . $user_id . "'",
+		));
+
+		$result 		= $this->db->sql_query($sql);
+		$cpf_user_data	= $this->db->sql_fetchrow($result);
+
+		$this->db->sql_freeresult($result);
+
+		foreach($cpf_user_data as $key => $data)
+		{
+			if ($data && $key != 'user_id')
+			{
+				$cpf_user_data[$key] = $this->get_cpf_data($data, $key);
+			}
+		}
+
+		return $cpf_user_data;
+	}
+
+	/**
+	 * Get a list of the CPFs
 	 *
 	 * @return array $pf_fields_array
 	 * @access public
 	 */
-	public function get_cpf_data()
+	public function get_cpf_fields($phpbb = true)
 	{
+		$like_phpbb = ($phpbb) ? " AND pf.field_name LIKE '%phpbb%'" : " AND pf.field_name NOT LIKE '%phpbb%'";
+
 		$sql = 'SELECT pf.field_name, pl.lang_name
-			FROM ' . PROFILE_FIELDS_TABLE . ' pf, ' . PROFILE_LANG_TABLE . ' pl, ' . LANG_TABLE . " l
-			WHERE pf.field_id  = pl.field_id
-				AND pf.field_name LIKE '%phpbb%'
+			FROM ' . PROFILE_FIELDS_TABLE . ' pf, ' . PROFILE_LANG_TABLE . ' pl, ' . LANG_TABLE . ' l
+			WHERE pf.field_id  = pl.field_id' .
+				$like_phpbb . "
 				AND pl.lang_id = l.lang_id
 				AND pf.field_active = 1
 				AND l.lang_iso = '" . $this->user->data['user_lang'] . "'";
@@ -228,7 +260,7 @@ class privacypolicy
 	 * @return $value
 	 * @access public
 	 */
-	public function get_pf_data($field_value, $field_name)
+	public function get_cpf_data($field_value, $field_name)
 	{
 		// Remove 'pf_' from the field name
 		$field_name = substr($field_name, 3);

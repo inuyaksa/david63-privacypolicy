@@ -41,7 +41,7 @@ $lang = array_merge($lang, array(
 
 	'BIRTHDAY'			=> 'Birthday',
 
-	'NO_BIRTHDAY'		=> 'No birthday entered',
+	'NO_BIRTHDAY'		=> 'No birthdate entered',
 	'NO_DATA_ENTERED'	=> 'No data has been entered',
 	'NOT_ACCEPTED'		=> 'Policy has not been accepted',
 
@@ -52,4 +52,19 @@ $lang = array_merge($lang, array(
 	'USER_IPS'			=> 'IP addresses that you have used',
 	
 	'VERSION'			=> 'Version',
+
+	'priv_months'		=> array(
+		1	=> 'January',
+		2	=> 'February',
+		3	=> 'March',
+		4	=> 'April',
+		5	=> 'May',
+		6	=> 'June',
+		7	=> 'July',
+		8	=> 'August',
+		9 	=> 'September',
+		10	=> 'October',
+		11	=> 'November',
+		12	=> 'December',
+	),
 ));

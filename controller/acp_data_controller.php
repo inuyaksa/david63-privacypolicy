@@ -50,7 +50,7 @@ class acp_data_controller implements acp_data_interface
 	/** @var string PHP extension */
 	protected $phpEx;
 
-	/* @var \david63\privacypolicy\core\privacypolicy */
+	/** @var \david63\privacypolicy\core\privacypolicy */
 	protected $privacypolicy;
 
 	/** @var \phpbb\pagination */
@@ -269,7 +269,7 @@ class acp_data_controller implements acp_data_interface
 
 		$privacy_username = $this->request->variable('privacy_username', '');
 
-		$confirm	= true;
+		$confirm = true;
 
 		// Submit
 		if ($this->request->is_set_post('submit'))
@@ -278,6 +278,12 @@ class acp_data_controller implements acp_data_interface
 			if (!check_form_key($form_key))
 			{
 				trigger_error($this->language->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
+			}
+
+			// Has a username been entered?
+			if (!$privacy_username)
+			{
+				trigger_error($this->language->lang('NO_USERNAME') . adm_back_link($this->u_action), E_USER_WARNING);
 			}
 
 			// Get the userid from the username
