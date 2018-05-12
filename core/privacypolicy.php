@@ -96,7 +96,7 @@ class privacypolicy
 		/**
 		* Event to allow adding additional user's privacy data
 		*
-		* @event david63.privacypolicy.add_data
+		* @event david63.privacypolicy.add_data_before
 		* @var	array	row		The row data
 		*
 		* @since 2.1.0
@@ -104,7 +104,7 @@ class privacypolicy
 		$vars = array(
 			'row',
 		);
-		extract($this->dispatcher->trigger_event('david63.privacypolicy.add_data', compact($vars)));
+		extract($this->dispatcher->trigger_event('david63.privacypolicy.add_data_before', compact($vars)));
 
 		// Format the date of birth
 		$birthday	= explode('-', $row['user_birthday']);
@@ -143,19 +143,22 @@ class privacypolicy
 		// Get the CPF data for this user
 		$cpf_user_data = $this->get_cpf_user_data($user_id);
 
-		$new_array = array_merge_recursive($cpf_fields, $cpf_user_data);
+		$template_array = array_merge_recursive($cpf_fields, $cpf_user_data);
 
-		foreach($new_array as $key => $data)
-		{
-			if('pf_phpbb' == substr($key, 0, 8) && $data)
-			{
-				$cpf_data = ($data[1]) ? $data[1] : $this->language->lang('NO_DATA_ENTERED');
-				$this->template->assign_block_vars('cpf_data', array(
-					'FIELD_NAME' => $data[0],
-					'FIELD_DATA' => $cpf_data,
-				));
-			}
-		}
+		$this->set_template_data($template_array);
+
+		/**
+		* Event to allow adding additional user's privacy data
+		*
+		* @event david63.privacypolicy.add_data_after
+		* @var	array	row		The row data
+		*
+		* @since 2.1.0
+		*/
+		$vars = array(
+			'row',
+		);
+		extract($this->dispatcher->trigger_event('david63.privacypolicy.add_data_after', compact($vars)));
 
 		// Get the IPs that this user has used
 		$sql = 'SELECT poster_ip
@@ -177,6 +180,21 @@ class privacypolicy
 		$this->db->sql_freeresult($result);
 
 		$this->template->assign_var('USER_IPS', $user_ips);
+	}
+
+	public function set_template_data($template_array)
+	{
+		foreach($template_array as $key => $data)
+		{
+			if('pf_phpbb' == substr($key, 0, 8) && $data)
+			{
+				$cpf_data = ($data[1]) ? $data[1] : $this->language->lang('NO_DATA_ENTERED');
+				$this->template->assign_block_vars('cpf_data', array(
+					'FIELD_NAME' => $data[0],
+					'FIELD_DATA' => $cpf_data,
+				));
+			}
+		}
 	}
 
 	/**
