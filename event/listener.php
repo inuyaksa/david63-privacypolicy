@@ -106,6 +106,11 @@ class listener implements EventSubscriberInterface
 			'core.modify_text_for_display_after'				=> 'insert_sitename',
 			'core.update_session_after'							=> 'privacy_redirect',
 			'core.display_custom_bbcodes_modify_sql'			=> 'display_bbcode',
+			'core.acp_profile_create_edit_init'					=> 'add_visibility',
+			'core.acp_profile_create_edit_after'				=> 'add_template_variables',
+			'core.acp_profile_create_edit_save_before'			=> 'save_field',
+			'core.generate_profile_fields_template_headlines'	=> 'remove_from_template_profile',
+			'core.generate_profile_fields_template_data'		=> 'remove_fields_from_block',
 		);
 	}
 
@@ -304,5 +309,116 @@ class listener implements EventSubscriberInterface
 			$sql_ary = str_replace('b.display_on_posting = 1', 'b.display_on_posting = 1 AND b.bbcode_tag <> "hr"', $sql_ary);
 			$event->offsetSet('sql_ary', $sql_ary);
 		}
+	}
+
+		/**
+	 * Manage new column in profile fields table (create/edit), init section
+	 *
+	 * @param object $event The event object
+	 * @return void
+	 */
+	public function add_visibility($event)
+	{
+		// Add the language file
+		$this->language->add_lang('acp_cpf_privacypolicy', 'david63/privacypolicy');
+
+		$action 		= $event['action'];
+		$field_row		= $event['field_row'];
+		$exclude 		= $event['exclude'];
+		$visibility_ary	= $event['visibility_ary'];
+
+		if ($action == 'create')
+		{
+			$field_row['field_privacy_show'] = 0;
+		}
+		$exclude[1][] 		= 'field_privacy_show';
+		$visibility_ary[] 	= 'field_privacy_show';
+
+		$event['field_row'] 		= $field_row;
+		$event['exclude'] 			= $exclude;
+		$event['visibility_ary'] 	= $visibility_ary;
+	}
+
+	/**
+	 * Manage new column in profile fields table (create/edit), template vars
+	 *
+	 * @param object $event The event object
+	 * @return void
+	 */
+	public function add_template_variables($event)
+	{
+		$field_data = $event['field_data'];
+
+		if ($event['step'] == 1)
+		{
+			$this->template->assign_vars(array('S_FIELD_PRIVACY_SHOW' => ($field_data['field_privacy_show']) ? true : false));
+		}
+	}
+
+	/**
+	 * Manage new column in profile fields table (create/edit), save section
+	 *
+	 * @param object $event The event object
+	 * @return void
+	 */
+	public function save_field($event)
+	{
+		$field_data 	= $event['field_data'];
+		$profile_fields = $event['profile_fields'];
+
+		$profile_fields['field_privacy_show'] = $field_data['field_privacy_show'];
+
+		$event['profile_fields'] = $profile_fields;
+	}
+
+	/**
+	 * Removes profile fields from profile fields headlines
+	 *
+	 * @param object $event The event object
+	 * @return void
+	 */
+	public function remove_from_template_profile($event)
+	{
+		$profile_cache	= $event['profile_cache'];
+		$tpl_fields 	= $event['tpl_fields'];
+
+		$new_tpl_fields = array();
+		foreach ($tpl_fields as $field_block)
+		{
+			$ident = $field_block['PROFILE_FIELD_IDENT'];
+			if ($profile_cache[$ident]['field_privacy_show'])
+			{
+				continue;
+			}
+			$new_tpl_fields[] = $field_block;
+		}
+
+		$event['tpl_fields'] = $new_tpl_fields;
+	}
+
+	/**
+	 * Removes profile fields from profile fields block
+	 *
+	 * @param object $event The event object
+	 * @return void
+	 */
+	public function remove_fields_from_block($event)
+	{
+		$profile_row	= $event['profile_row'];
+		$tpl_fields 	= $event['tpl_fields'];
+
+		$new_blockrow = array();
+		foreach ($tpl_fields['blockrow'] as $field_block)
+		{
+			$ident = $field_block['PROFILE_FIELD_IDENT'];
+			if ($profile_row[$ident]['data']['field_privacy_show'])
+			{
+				continue;
+			}
+			$new_blockrow[] = $field_block;
+		}
+		$tpl_fields['blockrow'] = $new_blockrow;
+
+		$event['tpl_fields'] = $tpl_fields;
 	}
 }

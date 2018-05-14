@@ -145,7 +145,16 @@ class privacypolicy
 
 		$template_array = array_merge_recursive($cpf_fields, $cpf_user_data);
 
-		$this->set_template_data($template_array);
+		foreach($template_array as $key => $data)
+		{
+			if (array_key_exists($key, $cpf_fields))
+			{
+				$this->template->assign_block_vars('cpf_data', array(
+					'FIELD_NAME' => $data[0],
+					'FIELD_DATA' => $data[1],
+				));
+			}
+		}
 
 		/**
 		* Event to allow adding additional user's privacy data
@@ -182,21 +191,6 @@ class privacypolicy
 		$this->template->assign_var('USER_IPS', $user_ips);
 	}
 
-	public function set_template_data($template_array)
-	{
-		foreach($template_array as $key => $data)
-		{
-			if('pf_phpbb' == substr($key, 0, 8) && $data)
-			{
-				$cpf_data = ($data[1]) ? $data[1] : $this->language->lang('NO_DATA_ENTERED');
-				$this->template->assign_block_vars('cpf_data', array(
-					'FIELD_NAME' => $data[0],
-					'FIELD_DATA' => $cpf_data,
-				));
-			}
-		}
-	}
-
 	/**
 	 * Get an array of the user's CPF data
 	 *
@@ -228,13 +222,13 @@ class privacypolicy
 
 		foreach($cpf_user_data as $key => $data)
 		{
-			if ($data && $key != 'user_id')
+			if ($key != 'user_id')
 			{
-				$cpf_user_data[$key] = $this->get_cpf_data($data, $key);
+				$user_data[$key] = ($data) ? $this->get_cpf_data($data, $key) : $this->language->lang('NO_DATA_ENTERED');
 			}
 		}
 
-		return $cpf_user_data;
+		return $user_data;
 	}
 
 	/**
@@ -243,17 +237,16 @@ class privacypolicy
 	 * @return array $pf_fields_array
 	 * @access public
 	 */
-	public function get_cpf_fields($phpbb = true)
+	public function get_cpf_fields()
 	{
-		$like_phpbb = ($phpbb) ? " AND pf.field_name LIKE '%phpbb%'" : " AND pf.field_name NOT LIKE '%phpbb%'";
-
 		$sql = 'SELECT pf.field_name, pl.lang_name
-			FROM ' . PROFILE_FIELDS_TABLE . ' pf, ' . PROFILE_LANG_TABLE . ' pl, ' . LANG_TABLE . ' l
-			WHERE pf.field_id  = pl.field_id' .
-				$like_phpbb . "
+			FROM ' . PROFILE_FIELDS_TABLE . ' pf, ' . PROFILE_LANG_TABLE . ' pl, ' . LANG_TABLE . " l
+			WHERE pf.field_id  = pl.field_id
+				AND pf.field_privacy_show = 1
 				AND pl.lang_id = l.lang_id
 				AND pf.field_active = 1
-				AND l.lang_iso = '" . $this->user->data['user_lang'] . "'";
+				AND l.lang_iso = '" . $this->user->data['user_lang'] . "'
+				ORDER BY pf.field_id ASC";
 
 		$result	= $this->db->sql_query($sql);
 
