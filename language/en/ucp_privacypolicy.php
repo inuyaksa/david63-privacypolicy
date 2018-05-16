@@ -37,9 +37,8 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
+	'CSV_DOWNLOAD'					=> 'Download CSV file of this data',
+
 	'UCP_PRIVACY_POLICY_EXPLAIN'	=> 'Below you will find the details of your personal data that we store on this site.',
 	'UCP_PRIVACY_TITLE'				=> 'Privacy Policy Data',
-
-	'YOUR_POSTS'					=> 'Your posts',
-	'YOUR_POSTS_EXPLAIN'			=> 'Click the link for a list of all your posts'
 ));

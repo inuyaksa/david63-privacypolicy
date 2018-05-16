@@ -38,7 +38,8 @@
 			<div class="table-header-cell">{{ lang('USERNAME') }}</div>
 			<div class="table-header-cell">{{ lang('ACCEPT_DATE') }}</div>
 			<div class="table-header-cell">{{ lang('REG_DATE') }}</div>
-			<div class="table-header-cell-right">{{ lang('LAST_VISIT') }}</div>
+			<div class="table-header-cell">{{ lang('LAST_VISIT') }}</div>
+			<div class="table-header-cell-right">{{ lang('POSTS') }}</div>
 		</div>
 
 		<div class="table-body">
@@ -49,6 +50,7 @@
 				<div class="table-body-cell">{{ list.ACCEPT_DATE }}</div>
 				<div class="table-body-cell">{{ list.REG_DATE }}</div>
 				<div class="table-body-cell">{{ list.LAST_VISIT }}</div>
+				<div class="table-body-cell">{{ list.POSTS }}</div>
 			</div>
 			{% endfor %}
 		</div>

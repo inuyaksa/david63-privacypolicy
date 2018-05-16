@@ -35,3 +35,21 @@
 	overflow-y: auto;
 	font-size: 11px
 }
+
+/* Style buttons */
+.download-btn {
+	background-color: #CADCEB;
+  	border: none;
+  	color: white;
+  	padding: 12px 30px;
+  	font-size: 16px;
+  	cursor: pointer;
+  	font-size: 20px;
+  	margin-top: 15px;
+  	margin-bottom: 15px;
+}
+
+/* Darker background on mouse-over */
+.download-btn:hover {
+  	background-color: #4169E1;
+}

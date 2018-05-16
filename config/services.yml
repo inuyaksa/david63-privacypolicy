@@ -75,7 +75,9 @@ services:
         class: david63\privacypolicy\controller\ucp_controller
         arguments:
             - '@user'
+            - '@request'			
             - '@language'
+            - '@template'
             - '@david63.privacypolicy.core.privacypolicy'
 
     david63.privacypolicy.core.privacypolicy:

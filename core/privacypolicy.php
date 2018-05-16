@@ -85,44 +85,13 @@ class privacypolicy
 	*/
 	public function display_privacy_data($user_id)
 	{
-		// Get the user data
-		$sql = 'SELECT *
-			FROM ' . USERS_TABLE . '
-			WHERE user_id = ' . $user_id;
-
-		$result = $this->db->sql_query($sql);
-		$row	= $this->db->sql_fetchrow($result);
-
-		/**
-		* Event to allow adding additional user's privacy data
-		*
-		* @event david63.privacypolicy.add_data_before
-		* @var	array	row		The row data
-		*
-		* @since 2.1.0
-		*/
-		$vars = array(
-			'row',
-		);
-		extract($this->dispatcher->trigger_event('david63.privacypolicy.add_data_before', compact($vars)));
-
-		// Format the date of birth
-		$birthday	= explode('-', $row['user_birthday']);
-		$birthdate	= '';
-		if ($birthday[0] > 0 && $birthday[1] > 0)
-		{
-			$birthdate = $birthday[0] . ' ' . $this->language->lang_raw('priv_months')[$birthday[1]];
-			if ($birthday[2] > 0)
-			{
-				$birthdate .= ' ' . $birthday[2];
-			}
-		}
+		$row = $this->get_user_data_row ($user_id);
 
 		// Set output vars for display in the template
 		$this->template->assign_vars(array(
 			'ACCEPT_DATE'				=> ($row['user_accept_date'] > 0) ? $this->user->format_date($row['user_accept_date']) : $this->language->lang('NOT_ACCEPTED'),
 			'BANNER'					=> $this->language->lang('DETAILS_FOR', $row['username']),
- 			'BIRTHDAY'					=> ($birthdate) ? $birthdate : $this->language->lang('NO_BIRTHDAY'),
+ 			'BIRTHDAY'					=> $this->get_birthday($row['user_birthday']),
 
 			'EMAIL'						=> $row['user_email'],
 
@@ -132,10 +101,7 @@ class privacypolicy
 			'REG_IP'					=> $row['user_ip'],
 
 			'USER'						=> $row['username'],
-			'U_SEARCH_SELF'				=> append_sid("{$this->root_path}search.$this->phpEx", 'search_id=egosearch'),
 		));
-
-		$this->db->sql_freeresult($result);
 
 		// Get the core CPF data fields
 		$cpf_fields = $this->get_cpf_fields();
@@ -160,6 +126,7 @@ class privacypolicy
 		* Event to allow adding additional user's privacy data
 		*
 		* @event david63.privacypolicy.add_data_after
+		*
 		* @var	array	row		The row data
 		*
 		* @since 2.1.0
@@ -169,7 +136,157 @@ class privacypolicy
 		);
 		extract($this->dispatcher->trigger_event('david63.privacypolicy.add_data_after', compact($vars)));
 
-		// Get the IPs that this user has used
+		$this->template->assign_var('USER_IPS', $this->get_user_ips($user_id));
+	}
+
+	/**
+	* Create the CSV output file
+	*
+	* @return null
+	* @access public
+	*/
+	public function create_csv($username, $user_id)
+	{
+		$csv_file = $csv_header = $csv_data = '';
+
+		$row 			= $this->get_user_data_row ($user_id);
+		$birthdate 		= $this->get_birthday($row['user_birthday']);
+		$accept_date	= ($row['user_accept_date'] > 0) ? $this->user->format_date($row['user_accept_date']) : $this->language->lang('NOT_ACCEPTED');
+
+		// Create the CSV file
+		$filename	= 'phpBB_Privacy_Data_' . $username . '_' . date('Ymd') . '.csv';
+		$fp 		= fopen('php://output', 'w');
+
+		$csv_header = $this->language->lang('USERNAME') . ',' . $this->language->lang('BIRTHDAY') . ',' . $this->language->lang('REG_DATE') . ',' . $this->language->lang('ACCEPT_DATE') . ',' . $this->language->lang('EMAIL') . ',';
+		$csv_data 	= '"' . $username . '","' . $birthdate . '","' . $this->user->format_date($row['user_regdate']) . '","' . $accept_date . '","' . $row['user_email'] . '","';
+
+		/**
+		* Event to allow adding additional user's privacy data to the CSV file
+		*
+		* @event david63.privacypolicy.add_csv_data_after
+		*
+		* @var	string	csv_header	The CSV header row
+		* @var	string	csv_data	The CSV data row
+		*
+		* @since 2.1.0
+		*/
+		$vars = array(
+			'csv_header',
+			'csv_data',
+		);
+		extract($this->dispatcher->trigger_event('david63.privacypolicy.add_csv_data_after', compact($vars)));
+
+		// Add the CPF field data
+		// Get the core CPF data fields
+		$cpf_fields = $this->get_cpf_fields();
+
+		// Get the CPF data for this user
+		$cpf_user_data = $this->get_cpf_user_data($user_id);
+
+		$csv_array = array_merge_recursive($cpf_fields, $cpf_user_data);
+
+		foreach($csv_array as $key => $data)
+		{
+			if (array_key_exists($key, $cpf_fields))
+			{
+				$csv_header .= $data[0]  . ',';
+				$csv_data	.= strip_tags($data[1]) . '","';
+			}
+		}
+
+		/**
+		* Event to allow adding additional user's privacy data to the CSV file
+		*
+		* @event david63.privacypolicy.add_csv_cpf_after
+		*
+		* @var	string	csv_header	The CSV header row
+		* @var	string	csv_data	The CSV data row
+		*
+		* @since 2.1.0
+		*/
+		$vars = array(
+			'csv_header',
+			'csv_data',
+		);
+		extract($this->dispatcher->trigger_event('david63.privacypolicy.add_csv_cpf_after', compact($vars)));
+
+		$ip_addresses = $this->get_user_ips($user_id);
+		$ip_addresses = str_replace('<br>', $this->language->lang('COMMA_SEPARATOR'), $ip_addresses);
+		$ip_addresses = rtrim($ip_addresses, ', ');
+
+		$csv_header .= $this->language->lang('REG_IP') . ',' . $this->language->lang('USER_IPS') . "\n";
+		$csv_data 	.= $row['user_ip'] . '","' . $ip_addresses . '"' . "\n";
+
+		/**
+		* Event to allow adding additional user's privacy data to the CSV file
+		*
+		* @event david63.privacypolicy.add_csv_ip_after
+		*
+		* @var	string	csv_header	The CSV header row
+		* @var	string	csv_data	The CSV data row
+		*
+		* @since 2.1.0
+		*/
+		$vars = array(
+			'csv_header',
+			'csv_data',
+		);
+		extract($this->dispatcher->trigger_event('david63.privacypolicy.add_csv_ip_after', compact($vars)));
+
+
+		// Merge the header and data files
+		$csv_file = $csv_header . $csv_data;
+
+		// Output the CSV file
+		header('Content-Type: application/octet-stream');
+		header("Content-disposition: attachment; filename=\"" . basename($filename) . "\"");
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+		header('Cache-Control: private', false);
+		header('Pragma: public');
+		header('Content-Transfer-Encoding: binary');
+
+		fwrite($fp, "\xEF\xBB\xBF"); // UTF-8 BOM
+		fwrite($fp, $csv_file);
+		fclose($fp);
+
+		// The file has been output so stop
+		exit_handler();
+	}
+
+	/**
+	 * Get the user data
+	 *
+	 * @param $user_id
+	 *
+	 * @return array $row
+	 * @access public
+	 */
+	public function get_user_data_row ($user_id)
+	{
+			// Get the user data
+		$sql = 'SELECT *
+			FROM ' . USERS_TABLE . '
+			WHERE user_id = ' . $user_id;
+
+		$result = $this->db->sql_query($sql);
+		$row	= $this->db->sql_fetchrow($result);
+
+		$this->db->sql_freeresult($result);
+
+		return $row;
+	}
+
+	/**
+	 * Get the IPs that this user has used
+	 *
+	 * @param $user_id
+	 *
+	 * @return string $user_ips
+	 * @access public
+	 */
+	public function get_user_ips($user_id)
+	{
 		$sql = 'SELECT poster_ip
 			FROM ' . POSTS_TABLE . '
 			WHERE poster_id = ' . $user_id . "
@@ -188,7 +305,34 @@ class privacypolicy
 
 		$this->db->sql_freeresult($result);
 
-		$this->template->assign_var('USER_IPS', $user_ips);
+		return $user_ips;
+	}
+
+	/**
+	 * Format the date of birth
+	 *
+	 * @param $birthday
+	 *
+	 * @return string $birthdate
+	 * @access public
+	 */
+	public function get_birthday($birthday)
+	{
+		$birthday	= explode('-', $birthday);
+		$birthdate	= '';
+
+		if ($birthday[0] > 0 && $birthday[1] > 0)
+		{
+			$birthdate = $birthday[0] . ' ' . $this->language->lang_raw('priv_months')[$birthday[1]];
+			if ($birthday[2] > 0)
+			{
+				$birthdate .= ' ' . $birthday[2];
+			}
+		}
+
+		$birthdate = ($birthdate) ? $birthdate : $this->language->lang('NO_BIRTHDAY');
+
+		return $birthdate;
 	}
 
 	/**

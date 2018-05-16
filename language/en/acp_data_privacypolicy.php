@@ -42,6 +42,8 @@ $lang = array_merge($lang, array(
 
 	'DETAILS_FOR'					=> 'Privacy details for : %1$s',
 
+	'INVALID_USERNAME'				=> 'Invalid username entered',
+
 	'NO_USERNAME'					=> 'No Username entered',
 
 	'SELECT_USERNAME_EXPLAIN'		=> 'The user whose privacy data you wish to examine.',

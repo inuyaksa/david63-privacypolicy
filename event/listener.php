@@ -129,7 +129,7 @@ class listener implements EventSubscriberInterface
 			'S_COOKIE_BLOCK_LINKS'	=> $this->config['cookie_block_links'],
 			'S_COOKIE_ON_INDEX'		=> $this->config['cookie_on_index'],
 			'S_COOKIE_SHOW_POLICY'	=> $this->config['cookie_show_policy'],
-			'S_POLICY_ENABLED'		=> $this->config['policy_enable'],
+			'S_POLICY_ENABLED'		=> $this->config['privacy_policy_enable'],
 
 			'U_COOKIE_PAGE'			=> $this->helper->route('david63_privacypolicy_policyoutput', array('name' => 'policy')),
 		));
@@ -161,8 +161,8 @@ class listener implements EventSubscriberInterface
 		}
 
 		$this->template->assign_vars(array(
-			'S_SHOW_COOKIE_ACCEPT'	=> $cookie_set,
 			'S_COOKIE_ENABLED'		=> $this->config['cookie_policy_enable'],
+			'S_SHOW_COOKIE_ACCEPT'	=> $cookie_set,
 		));
 	}
 
@@ -311,7 +311,7 @@ class listener implements EventSubscriberInterface
 		}
 	}
 
-		/**
+	/**
 	 * Manage new column in profile fields table (create/edit), init section
 	 *
 	 * @param object $event The event object

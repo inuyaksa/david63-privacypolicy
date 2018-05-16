@@ -91,7 +91,7 @@ class acp_data_controller implements acp_data_interface
 	}
 
 	/**
-	* Display the privacy data list for all user
+	* Display the privacy data list for all users
 	*
 	* @return null
 	* @access public
@@ -140,7 +140,7 @@ class acp_data_controller implements acp_data_interface
 		}
 
 		$sql = $this->db->sql_build_query('SELECT', array(
-			'SELECT'	=> 'u.user_id, u.username, u.username_clean, u.user_colour, u.user_regdate, u.user_accept_date, u.user_lastvisit',
+			'SELECT'	=> 'u.user_id, u.username, u.username_clean, u.user_colour, u.user_regdate, u.user_accept_date, u.user_posts',
 			'FROM'		=> array(
 				USERS_TABLE	=> 'u',
 			),
@@ -153,11 +153,12 @@ class acp_data_controller implements acp_data_interface
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$this->template->assign_block_vars('privacy_list', array(
+				'ACCEPT_DATE'	=> ($row['user_accept_date'] != 0) ? $this->user->format_date($row['user_accept_date']) : 'Not accepted',
+				'LAST_VISIT'	=> $this->get_last_visit($row['user_id']),
+				'REG_DATE'		=> $this->user->format_date($row['user_regdate']),
 				'USERNAME'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
 				'USER_ID'		=> $this->language->lang('HASH') . $row['user_id'],
-				'ACCEPT_DATE'	=> ($row['user_accept_date'] != 0) ? $this->user->format_date($row['user_accept_date']) : 'Not accepted',
-				'LAST_VISIT'	=> $this->user->format_date($row['user_lastvisit']),
-				'REG_DATE'		=> $this->user->format_date($row['user_regdate']),
+				'POSTS'			=> $row['user_posts'],
 		   	));
 		}
 		$this->db->sql_freeresult($result);
@@ -213,6 +214,59 @@ class acp_data_controller implements acp_data_interface
 	}
 
 	/**
+	 * Get the user's last visit
+	 * This is more accurate than user_lastvisit in the user table
+	 *
+	 * @param $user_id
+	 * @return int|mixed|string $last_visit
+	 * @access protected
+	 */
+	protected function get_last_visit($user_id)
+	{
+		$last_visit 	= '';
+		$session_times	= array();
+
+		$sql = 'SELECT session_user_id, MAX(session_time) AS session_time
+			FROM ' . SESSIONS_TABLE . '
+			WHERE session_time >= ' . (time() - $this->config['session_length']) . '
+				AND ' . $this->db->sql_in_set('session_user_id', $user_id) . '
+			GROUP BY session_user_id';
+
+		$result = $this->db->sql_query($sql);
+
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$session_times[$row['session_user_id']] = $row['session_time'];
+		}
+
+		$this->db->sql_freeresult($result);
+
+		$sql = 'SELECT user_lastvisit
+			FROM ' . USERS_TABLE . '
+			WHERE ' . $this->db->sql_in_set('user_id', $user_id);
+
+		$result = $this->db->sql_query($sql);
+
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$session_time	= (!empty($session_times[$user_id])) ? $session_times[$user_id] : 0;
+			if ($row['user_lastvisit'] == 0)
+			{
+				$last_visit = $this->language->lang('NO_VISIT');
+			}
+			else
+			{
+				$last_visit = (!empty($session_time)) ? $session_time : $row['user_lastvisit'];
+				$last_visit = $this->user->format_date($last_visit);
+			}
+		}
+
+		$this->db->sql_freeresult($result);
+
+		return $last_visit;
+	}
+
+	/**
 	 * Create the character select
 	 *
 	 * @param $default
@@ -249,7 +303,6 @@ class acp_data_controller implements acp_data_interface
 
 		return $char_select;
 	}
-
 
     /**
 	* Display the privacy data for a user
@@ -295,6 +348,12 @@ class acp_data_controller implements acp_data_interface
 
 			$row = $this->db->sql_fetchrow($result);
 			$this->db->sql_freeresult($result);
+
+			// Is the username valid?
+			if (!$row)
+			{
+				trigger_error($this->language->lang('INVALID_USERNAME') . adm_back_link($this->u_action), E_USER_WARNING);
+			}
 
 			$user_id = $row['user_id'];
 			$confirm = false;
