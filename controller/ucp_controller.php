@@ -93,7 +93,7 @@ class ucp_controller implements ucp_interface
 		$this->template->assign_vars(array(
 			'ERROR'				=> ($error) ? true : false,
 			'ERROR_MESSAGE'		=> $error,
-			
+
 			'S_FORM_ENCTYPE'	=> ' enctype="multipart/form-data"',
 			'S_UCP_ACTION'		=> $this->u_action,
 		));
@@ -101,7 +101,7 @@ class ucp_controller implements ucp_interface
 		$this->privacypolicy->display_privacy_data($this->user->data['user_id']);
 	}
 
-		/**
+	/**
 	* Set page url
 	*
 	* @param string $u_action Custom form action

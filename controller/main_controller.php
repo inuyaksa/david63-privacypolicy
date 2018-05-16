@@ -140,7 +140,7 @@ class main_controller implements main_interface
 	*/
 	public function policyoutput($name)
 	{
-		$cookie_message	= '';
+		$cookie_message	= $output_name = '';
 
 		switch ($name)
 		{
