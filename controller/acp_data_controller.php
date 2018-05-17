@@ -140,7 +140,7 @@ class acp_data_controller implements acp_data_interface
 		}
 
 		$sql = $this->db->sql_build_query('SELECT', array(
-			'SELECT'	=> 'u.user_id, u.username, u.username_clean, u.user_colour, u.user_regdate, u.user_accept_date, u.user_posts',
+			'SELECT'	=> 'u.user_id, u.username, u.username_clean, u.user_colour, u.user_regdate, u.user_accept_date, u.user_posts, u.user_lastvisit',
 			'FROM'		=> array(
 				USERS_TABLE	=> 'u',
 			),
@@ -154,7 +154,7 @@ class acp_data_controller implements acp_data_interface
 		{
 			$this->template->assign_block_vars('privacy_list', array(
 				'ACCEPT_DATE'	=> ($row['user_accept_date'] != 0) ? $this->user->format_date($row['user_accept_date']) : 'Not accepted',
-				'LAST_VISIT'	=> $this->user->format_date($row['user_id']),
+				'LAST_VISIT'	=> $this->user->format_date($row['user_lastvisit']),
 				'REG_DATE'		=> $this->user->format_date($row['user_regdate']),
 				'USERNAME'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
 				'USER_ID'		=> $this->language->lang('HASH') . $row['user_id'],
