@@ -154,7 +154,7 @@ class acp_data_controller implements acp_data_interface
 		{
 			$this->template->assign_block_vars('privacy_list', array(
 				'ACCEPT_DATE'	=> ($row['user_accept_date'] != 0) ? $this->user->format_date($row['user_accept_date']) : 'Not accepted',
-				'LAST_VISIT'	=> $this->get_last_visit($row['user_id']),
+				'LAST_VISIT'	=> $this->user->format_date($row['user_id']),
 				'REG_DATE'		=> $this->user->format_date($row['user_regdate']),
 				'USERNAME'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
 				'USER_ID'		=> $this->language->lang('HASH') . $row['user_id'],
@@ -211,59 +211,6 @@ class acp_data_controller implements acp_data_interface
 			'TOTAL_USERS'				=> $user_count,
 			'U_ACTION'					=> $action . "&ampfc=$fc",
 		));
-	}
-
-	/**
-	 * Get the user's last visit
-	 * This is more accurate than user_lastvisit in the user table
-	 *
-	 * @param $user_id
-	 * @return int|mixed|string $last_visit
-	 * @access protected
-	 */
-	protected function get_last_visit($user_id)
-	{
-		$last_visit 	= '';
-		$session_times	= array();
-
-		$sql = 'SELECT session_user_id, MAX(session_time) AS session_time
-			FROM ' . SESSIONS_TABLE . '
-			WHERE session_time >= ' . (time() - $this->config['session_length']) . '
-				AND ' . $this->db->sql_in_set('session_user_id', $user_id) . '
-			GROUP BY session_user_id';
-
-		$result = $this->db->sql_query($sql);
-
-		while ($row = $this->db->sql_fetchrow($result))
-		{
-			$session_times[$row['session_user_id']] = $row['session_time'];
-		}
-
-		$this->db->sql_freeresult($result);
-
-		$sql = 'SELECT user_lastvisit
-			FROM ' . USERS_TABLE . '
-			WHERE ' . $this->db->sql_in_set('user_id', $user_id);
-
-		$result = $this->db->sql_query($sql);
-
-		while ($row = $this->db->sql_fetchrow($result))
-		{
-			$session_time	= (!empty($session_times[$user_id])) ? $session_times[$user_id] : 0;
-			if ($row['user_lastvisit'] == 0)
-			{
-				$last_visit = $this->language->lang('NO_VISIT');
-			}
-			else
-			{
-				$last_visit = (!empty($session_time)) ? $session_time : $row['user_lastvisit'];
-				$last_visit = $this->user->format_date($last_visit);
-			}
-		}
-
-		$this->db->sql_freeresult($result);
-
-		return $last_visit;
 	}
 
 	/**

@@ -312,10 +312,12 @@ Tables
 
 .table-header-cell-left {
 	border-top-left-radius: 1em;
+	width: 7%;
 }
 
 .table-header-cell-right {
 	border-top-right-radius: 1em;
+	width: 7%;
 }
 
 .table-body {
