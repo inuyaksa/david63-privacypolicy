@@ -256,11 +256,9 @@ class listener implements EventSubscriberInterface
 	{
 		if ($this->config['privacy_policy_enable'])
 		{
-			$user_row = $event['user_row'];
-
-			$user_row['user_accept_date'] = $user_row['user_regdate'];
-
-			$event->offsetSet('user_row', $user_row);
+			$user_row 						= $event['user_row'];
+			$user_row['user_accept_date'] 	= $user_row['user_regdate'];
+			$event['user_row']				= $user_row;
 		}
 	}
 
@@ -275,9 +273,9 @@ class listener implements EventSubscriberInterface
 	*/
 	public function insert_sitename($event)
 	{
-		$text = $event['text'];
-		$text = str_replace("%sitename%", $this->config['sitename'], $text);
-		$event->offsetSet('text', $text);
+		$text 			= $event['text'];
+		$text 			= str_replace("%sitename%", $this->config['sitename'], $text);
+		$event['text']	= $text;
 	}
 
 	/**
@@ -306,9 +304,9 @@ class listener implements EventSubscriberInterface
 	{
 		if (!$this->auth->acl_get('a_privacy_manage') || !strpos($this->request->server('PHP_SELF'), 'adm'))
 		{
-			$sql_ary = $event['sql_ary'];
-			$sql_ary = str_replace('b.display_on_posting = 1', 'b.display_on_posting = 1 AND b.bbcode_tag <> "hr"', $sql_ary);
-			$event->offsetSet('sql_ary', $sql_ary);
+			$sql_ary 			= $event['sql_ary'];
+			$sql_ary 			= str_replace('b.display_on_posting = 1', 'b.display_on_posting = 1 AND b.bbcode_tag <> "hr"', $sql_ary);
+			$event['sql_ary']	= $sql_ary;
 		}
 	}
 
