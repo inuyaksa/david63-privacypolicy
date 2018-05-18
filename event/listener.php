@@ -109,8 +109,6 @@ class listener implements EventSubscriberInterface
 			'core.acp_profile_create_edit_init'					=> 'add_visibility',
 			'core.acp_profile_create_edit_after'				=> 'add_template_variables',
 			'core.acp_profile_create_edit_save_before'			=> 'save_field',
-			'core.generate_profile_fields_template_headlines'	=> 'remove_from_template_profile',
-			'core.generate_profile_fields_template_data'		=> 'remove_fields_from_block',
 		);
 	}
 
@@ -368,56 +366,5 @@ class listener implements EventSubscriberInterface
 		$profile_fields['field_privacy_show'] = $field_data['field_privacy_show'];
 
 		$event['profile_fields'] = $profile_fields;
-	}
-
-	/**
-	 * Removes profile fields from profile fields headlines
-	 *
-	 * @param object $event The event object
-	 * @return void
-	 */
-	public function remove_from_template_profile($event)
-	{
-		$profile_cache	= $event['profile_cache'];
-		$tpl_fields 	= $event['tpl_fields'];
-
-		$new_tpl_fields = array();
-		foreach ($tpl_fields as $field_block)
-		{
-			$ident = $field_block['PROFILE_FIELD_IDENT'];
-			if ($profile_cache[$ident]['field_privacy_show'])
-			{
-				continue;
-			}
-			$new_tpl_fields[] = $field_block;
-		}
-
-		$event['tpl_fields'] = $new_tpl_fields;
-	}
-
-	/**
-	 * Removes profile fields from profile fields block
-	 *
-	 * @param object $event The event object
-	 * @return void
-	 */
-	public function remove_fields_from_block($event)
-	{
-		$profile_row	= $event['profile_row'];
-		$tpl_fields 	= $event['tpl_fields'];
-
-		$new_blockrow = array();
-		foreach ($tpl_fields['blockrow'] as $field_block)
-		{
-			$ident = $field_block['PROFILE_FIELD_IDENT'];
-			if ($profile_row[$ident]['data']['field_privacy_show'])
-			{
-				continue;
-			}
-			$new_blockrow[] = $field_block;
-		}
-		$tpl_fields['blockrow'] = $new_blockrow;
-
-		$event['tpl_fields'] = $tpl_fields;
 	}
 }
