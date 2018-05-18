@@ -92,6 +92,16 @@
 		</dl>
 
 		<dl>
+			<dt><label for="privacy_policy_remove">{{ lang('PRIVACY_POLICY_REMOVE') }}{{ lang('COLON') }}</label><br /><span>{{ lang('PRIVACY_POLICY_REMOVE_EXPLAIN') }}</span></dt>
+			<dd>
+				<input type="radio" id="privacy_policy_remove1" name="privacy_policy_remove" value="1"{% if PRIVACY_POLICY_REMOVE %} checked="checked"{% endif %} />
+				<label class="set" for="privacy_policy_remove1">{{ lang('YES') }}</label>
+				<input type="radio" id="privacy_policy_remove0" name="privacy_policy_remove" value="0"{% if not PRIVACY_POLICY_REMOVE %} checked="checked"{% endif %} />
+				<label class="unset" for="privacy_policy_remove0">{{ lang('NO') }}</label>
+			</dd>
+		</dl>
+
+		<dl>
 			<dt><label for="privacy_policy_list_lines">{{ lang('PRIVACY_POLICY_LIST_LINES') }}{{ lang('COLON') }}</label><br /><span>{{ lang('PRIVACY_POLICY_LIST_LINES_EXPLAIN') }}</span></dt>
 			<dd>
 				<input class="textbox" name="privacy_policy_list_lines" type="number" id="privacy_policy_list_lines" value="{{ PRIVACY_POLICY_LIST_LINES }}" min="0" max="99" />

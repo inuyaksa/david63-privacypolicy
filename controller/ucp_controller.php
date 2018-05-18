@@ -9,6 +9,7 @@
 
 namespace david63\privacypolicy\controller;
 
+use \phpbb\config\config;
 use \phpbb\user;
 use \phpbb\request\request;
 use \phpbb\language\language;
@@ -20,6 +21,9 @@ use \david63\privacypolicy\core\privacypolicy;
 */
 class ucp_controller implements ucp_interface
 {
+	/** @var \phpbb\config\config */
+	protected $config;
+
 	/** @var \phpbb\user */
 	protected $user;
 
@@ -41,6 +45,7 @@ class ucp_controller implements ucp_interface
     /**
 	* Constructor for ucp controller
 	*
+	* @param \phpbb\config\config						$config			Config object
 	* @param \phpbb\user								$user			User object
 	* @param \phpbb\request\request						$request		Request object
 	* @param \phpbb\language\language					$language		Language object
@@ -50,8 +55,9 @@ class ucp_controller implements ucp_interface
 	* @return \david63\privacypolicy\controller\ucp_controller
 	* @access public
 	*/
-	public function __construct(user $user, request $request, language $language, template $template, privacypolicy $privacypolicy)
+	public function __construct(config $config, user $user, request $request, language $language, template $template, privacypolicy $privacypolicy)
 	{
+		$this->config			= $config;
 		$this->user				= $user;
 		$this->request			= $request;
 		$this->language			= $language;
@@ -96,6 +102,8 @@ class ucp_controller implements ucp_interface
 
 			'S_FORM_ENCTYPE'	=> ' enctype="multipart/form-data"',
 			'S_UCP_ACTION'		=> $this->u_action,
+
+			'U_REMOVE_ME'		=> $this->config['privacy_policy_remove'],
 		));
 
 		$this->privacypolicy->display_privacy_data($this->user->data['user_id']);

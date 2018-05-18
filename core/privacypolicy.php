@@ -11,6 +11,7 @@ namespace david63\privacypolicy\core;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+use \phpbb\config\config;
 use \phpbb\template\template;
 use \phpbb\user;
 use \phpbb\language\language;
@@ -24,6 +25,9 @@ use \david63\privacypolicy\ext;
 */
 class privacypolicy
 {
+	/** @var \phpbb\config\config */
+	protected $config;
+
 	/** @var \phpbb\template\template */
 	protected $template;
 
@@ -54,6 +58,7 @@ class privacypolicy
     /**
 	* Constructor for privacypolicy
 	*
+	* @param \phpbb\config\config			$config				Config object
 	* @param \phpbb\template\template		$template			Template object
 	* @param \phpbb\user					$user				User object
 	* @param \phpbb\language\language		$language			Language object
@@ -65,8 +70,9 @@ class privacypolicy
 	*
 	* @access public
 	*/
-	public function __construct(template $template, user $user, language $language, driver_interface $db, dispatcher_interface $dispatcher, service_collection $type_collection, $root_path, $php_ext)
+	public function __construct(config $config, template $template, user $user, language $language, driver_interface $db, dispatcher_interface $dispatcher, service_collection $type_collection, $root_path, $php_ext)
 	{
+		$this->config			= $config;
 		$this->template			= $template;
 		$this->user				= $user;
 		$this->language			= $language;
@@ -87,6 +93,7 @@ class privacypolicy
 	{
 		$row = $this->get_user_data_row ($user_id);
 
+
 		// Set output vars for display in the template
 		$this->template->assign_vars(array(
 			'ACCEPT_DATE'				=> ($row['user_accept_date'] > 0) ? $this->user->format_date($row['user_accept_date']) : $this->language->lang('NOT_ACCEPTED'),
@@ -101,6 +108,7 @@ class privacypolicy
 			'REG_IP'					=> $row['user_ip'],
 
 			'USER'						=> $row['username'],
+			'U_EMAIL'					=> 'mailto:' . $this->config['board_email'] . '?subject=' . $this->language->lang('REMOVE_MY_ACCOUNT') . '&body=' . $this->language->lang('REMOVE_MY_ACCOUNT_BODY', '%0D%0A', $row['username']),
 		));
 
 		// Get the core CPF data fields
@@ -137,6 +145,8 @@ class privacypolicy
 		extract($this->dispatcher->trigger_event('david63.privacypolicy.add_data_after', compact($vars)));
 
 		$this->template->assign_var('USER_IPS', $this->get_user_ips($user_id));
+
+
 	}
 
 	/**
