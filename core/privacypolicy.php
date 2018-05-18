@@ -323,8 +323,8 @@ class privacypolicy
 
 		if ($birthday[0] > 0 && $birthday[1] > 0)
 		{
-			$dateObj = \DateTime::createFromFormat('!m', (int) $birthday[1]);
-			$birthdate = $birthday[0] . ' ' . $this->language->lang_raw('datetime')[$dateObj->format('F')];
+			$dateObj 	= \DateTime::createFromFormat('!m', (int) $birthday[1]);
+			$birthdate	= $birthday[0] . ' ' . $this->language->lang_raw('datetime')[$dateObj->format('F')];
 			if ($birthday[2] > 0)
 			{
 				$birthdate .= ' ' . $birthday[2];

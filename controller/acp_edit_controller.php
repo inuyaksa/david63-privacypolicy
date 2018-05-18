@@ -276,6 +276,7 @@ class acp_edit_controller implements acp_edit_interface
 				'POLICY_EXPLAIN_NEW'	=> $policy_explain_new,
 				'POLICY_PREVIEW' 		=> $policy_preview,
 
+				'S_ADMIN_EDIT'			=> true,
 				'S_BBCODE_ALLOWED' 		=> true,
 				'S_BBCODE_FLASH' 		=> true,
 				'S_BBCODE_IMG' 			=> true,

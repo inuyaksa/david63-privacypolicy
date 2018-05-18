@@ -126,6 +126,7 @@ class listener implements EventSubscriberInterface
 	public function page_footer($event)
 	{
 		$this->template->assign_vars(array(
+			'S_ADMIN_EDIT'			=> false,
 			'S_COOKIE_BLOCK_LINKS'	=> $this->config['cookie_block_links'],
 			'S_COOKIE_ON_INDEX'		=> $this->config['cookie_on_index'],
 			'S_COOKIE_SHOW_POLICY'	=> $this->config['cookie_show_policy'],
