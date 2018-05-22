@@ -91,8 +91,11 @@ class privacypolicy
 	*/
 	public function display_privacy_data($user_id)
 	{
-		$row = $this->get_user_data_row ($user_id);
+		// Create a form key for preventing CSRF attacks
+		$form_key = 'privacy_policy_data';
+		add_form_key($form_key);
 
+		$row = $this->get_user_data_row ($user_id);
 
 		// Set output vars for display in the template
 		$this->template->assign_vars(array(
@@ -109,6 +112,8 @@ class privacypolicy
 
 			'USER'						=> $row['username'],
 			'U_EMAIL'					=> 'mailto:' . $this->config['board_email'] . '?subject=' . $this->language->lang('REMOVE_MY_ACCOUNT') . '&body=' . $this->language->lang('REMOVE_MY_ACCOUNT_BODY', '%0D%0A', $row['username']),
+
+			'S_ACCEPTED'				=> ($row['user_accept_date'] > 0) ? true : false,
 		));
 
 		// Get the core CPF data fields
@@ -145,8 +150,6 @@ class privacypolicy
 		extract($this->dispatcher->trigger_event('david63.privacypolicy.add_data_after', compact($vars)));
 
 		$this->template->assign_var('USER_IPS', $this->get_user_ips($user_id));
-
-
 	}
 
 	/**

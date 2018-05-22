@@ -19,6 +19,7 @@ use \phpbb\language\language;
 use \phpbb\db\driver\driver_interface;
 use \david63\privacypolicy\core\privacypolicy;
 use \phpbb\pagination;
+use \phpbb\log\log;
 use \david63\privacypolicy\ext;
 
 /**
@@ -56,6 +57,9 @@ class acp_data_controller implements acp_data_interface
 	/** @var \phpbb\pagination */
 	protected $pagination;
 
+	/** @var \phpbb\log\log */
+	protected $log;
+
 	/** @var string Custom form action */
 	protected $u_action;
 
@@ -72,11 +76,12 @@ class acp_data_controller implements acp_data_interface
 	* @param string										$php_ext            phpBB extension
 	* @param \david63\privacypolicy\core\privacypolicy	privacypolicy		Methods for the extension
 	* @param \phpbb\pagination							$pagination			Pagination object
+	* @param \phpbb\log\log								$log				Log object
 	*
 	* @return \david63\privacypolicy\controller\data_controller
 	* @access public
 	*/
-	public function __construct(config $config, request $request, user $user, template $template, language $language, driver_interface $db, $root_path, $php_ext, privacypolicy $privacypolicy, pagination $pagination)
+	public function __construct(config $config, request $request, user $user, template $template, language $language, driver_interface $db, $root_path, $php_ext, privacypolicy $privacypolicy, pagination $pagination, log $log)
 	{
 		$this->config			= $config;
 		$this->request			= $request;
@@ -88,6 +93,7 @@ class acp_data_controller implements acp_data_interface
 		$this->php_ext			= $php_ext;
 		$this->privacypolicy	= $privacypolicy;
 		$this->pagination		= $pagination;
+		$this->log				= $log;
 	}
 
 	/**
@@ -267,12 +273,13 @@ class acp_data_controller implements acp_data_interface
 		$form_key = 'privacy_policy_data';
 		add_form_key($form_key);
 
-		$privacy_username = $this->request->variable('privacy_username', '');
-
-		$confirm = true;
+		$privacy_username	= $this->request->variable('privacy_username', '');
+		$user_id 			= $this->request->variable('user_id', 0);
+		$username 			= $this->request->variable('username', '');
+		$confirm 			= true;
 
 		// Submit
-		if ($this->request->is_set_post('submit'))
+		if ($this->request->is_set_post('details') || $this->request->is_set_post('accept') || $this->request->is_set_post('unaccept'))
 		{
 			// Is the submitted form is valid?
 			if (!check_form_key($form_key))
@@ -280,39 +287,80 @@ class acp_data_controller implements acp_data_interface
 				trigger_error($this->language->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
 			}
 
-			// Has a username been entered?
-			if (!$privacy_username)
+			if ($this->request->is_set_post('details'))
 			{
-				trigger_error($this->language->lang('NO_USERNAME') . adm_back_link($this->u_action), E_USER_WARNING);
+				// Has a username been entered?
+				if (!$privacy_username)
+				{
+					trigger_error($this->language->lang('NO_USERNAME') . adm_back_link($this->u_action), E_USER_WARNING);
+				}
+
+				// Get the userid from the username
+				$sql = 'SELECT user_id
+					FROM ' . USERS_TABLE . "
+						WHERE username_clean = '" . $this->db->sql_escape(utf8_clean_string($privacy_username)) . "'";
+
+				$result = $this->db->sql_query($sql);
+
+				$row = $this->db->sql_fetchrow($result);
+				$this->db->sql_freeresult($result);
+
+				// Is the username valid?
+				if (!$row)
+				{
+					trigger_error($this->language->lang('INVALID_USERNAME') . adm_back_link($this->u_action), E_USER_WARNING);
+				}
+
+				$user_id = $row['user_id'];
+				$confirm = false;
+
+				$s_hidden_fields = array(
+					'user_id'	=> $user_id,
+					'username'	=> $privacy_username,
+				);
+
+				$this->template->assign_var('S_HIDDEN_FIELDS', build_hidden_fields($s_hidden_fields));
+
+				$this->privacypolicy->display_privacy_data($user_id);
 			}
 
-			// Get the userid from the username
-			$sql = 'SELECT user_id
-				FROM ' . USERS_TABLE . "
-					WHERE username_clean = '" . $this->db->sql_escape(utf8_clean_string($privacy_username)) . "'";
-
-			$result = $this->db->sql_query($sql);
-
-			$row = $this->db->sql_fetchrow($result);
-			$this->db->sql_freeresult($result);
-
-			// Is the username valid?
-			if (!$row)
+			if ($this->request->is_set_post('accept'))
 			{
-				trigger_error($this->language->lang('INVALID_USERNAME') . adm_back_link($this->u_action), E_USER_WARNING);
+				// Set the accept date in the Users table for this user
+				$sql = 'UPDATE ' . USERS_TABLE . '
+					SET user_accept_date = ' . time() . '
+					WHERE user_id = ' . $user_id;
+
+				$this->db->sql_query($sql);
+
+				// Add action to the admin log
+				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'POLICY_USER_ACCEPT_LOG', time(), array($username));
+
+				// Confirm this to the user and provide link back to previous page
+				trigger_error($this->language->lang('POLICY_ACCEPTANCE_SET', $username) . adm_back_link($this->u_action));
 			}
 
-			$user_id = $row['user_id'];
-			$confirm = false;
+			if ($this->request->is_set_post('unaccept'))
+			{
+				// Reset the accept date in the Users table for this user
+				$sql = 'UPDATE ' . USERS_TABLE . '
+					SET user_accept_date = 0
+					WHERE user_id = ' . $user_id;
 
-			$this->template->assign_var('S_CONFIRM', $confirm);
+				$this->db->sql_query($sql);
 
-			$this->privacypolicy->display_privacy_data($user_id);
+				// Add action to the admin log
+				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'POLICY_USER_UNSET_LOG', time(), array($username));
+
+				// Confirm this to the user and provide link back to previous page
+				trigger_error($this->language->lang('POLICY_ACCEPTANCE_UNSET', $username) . adm_back_link($this->u_action));
+			}
 		}
 
 		$this->template->assign_vars(array(
 			'PRIVACY_POLICY_VERSION'	=> ext::PRIVACY_POLICY_VERSION,
 			'S_CONFIRM'					=> $confirm,
+			'U_ACTION'					=> $this->u_action,
 			'U_FIND_USERNAME'			=> append_sid("{$this->root_path}memberlist.$this->php_ext", 'mode=searchuser&amp;form=privacy_policy_data&amp;field=privacy_username&amp;select_single=true'),
 		));
 	}

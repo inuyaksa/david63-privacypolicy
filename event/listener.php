@@ -239,7 +239,7 @@ class listener implements EventSubscriberInterface
 	*/
 	public function load_modified_agreement($event)
 	{
-		if ($this->config['privacy_policy_enable'])
+		if ($this->config['privacy_policy_enable'] && !$this->user->data['is_bot'])
 		{
 			$template_vars = $event['template_vars'];
 
@@ -263,6 +263,16 @@ class listener implements EventSubscriberInterface
 			$user_row 						= $event['user_row'];
 			$user_row['user_accept_date'] 	= $user_row['user_regdate'];
 			$event['user_row']				= $user_row;
+		}
+
+		// Update Auto Groups - if installed
+		// This conditional must be used to ensure calls only go out if Auto Groups is installed/enabled
+		if ($this->autogroup_manager !== null)
+		{
+			// This calls our class and sends it some $options data
+			$this->autogroup_manager->check_condition('david63.privacypolicy.autogroups.type.ppaccept', array(
+				'users' => $event['user_id_ary'],
+			));
 		}
 	}
 
@@ -291,16 +301,7 @@ class listener implements EventSubscriberInterface
 	*/
 	public function privacy_redirect($event)
 	{
-		// This conditional must be used to ensure calls only go out if Auto Groups is installed/enabled
-		if ($this->autogroup_manager !== null)
-		{
-			// This calls our class and sends it some $options data
-			$this->autogroup_manager->check_condition('david63.privacypolicy.autogroups.type.ppaccept', array(
-				'users' => $event['user_id_ary'],
-			));
-		}
-
-	   if ($this->config['privacy_policy_enable'] && $this->config['privacy_policy_force'] && $this->user->data['user_accept_date'] == 0 && $this->user->data['user_id'] != ANONYMOUS)
+	   if ($this->config['privacy_policy_enable'] && $this->config['privacy_policy_force'] && $this->user->data['user_accept_date'] == 0 && !$this->user->data['is_bot'] && $this->user->data['user_id'] != ANONYMOUS)
 		{
 			redirect($this->helper->route('david63_privacypolicy_acceptance'));
 		}

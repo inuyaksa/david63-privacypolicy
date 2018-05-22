@@ -42,7 +42,9 @@ $lang = array_merge($lang, array(
 
 	'COOKIE_POLICY'				=> 'Privacy & Cookie policy',
 
-	'POLICY_RESET_LOG'			=> '<strong>Privacy policy acceptance reset</strong>',
+	'POLICY_RESET_LOG'			=> '<strong>Privacy policy acceptance reset for all users</strong>',
+	'POLICY_USER_ACCEPT_LOG'	=> '<strong>Privacy policy acceptance set for user</strong><br />»» %1$s',
+	'POLICY_USER_UNSET_LOG'		=> '<strong>Privacy policy acceptance unset for user</strong><br />»» %1$s',
 	'PRIVACY_DATA'				=> 'Privacy data',
 	'PRIVACY_EDIT_CREATED'		=> 'New privacy policy created',
 	'PRIVACY_EDIT_UPDATED'		=> 'Privacy policy updated',

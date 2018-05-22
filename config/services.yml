@@ -71,6 +71,7 @@ services:
             - '%core.php_ext%'
             - '@david63.privacypolicy.core.privacypolicy'
             - '@pagination'
+            - '@log'			
 
     david63.privacypolicy.ucp.controller:
         class: david63\privacypolicy\controller\ucp_controller
