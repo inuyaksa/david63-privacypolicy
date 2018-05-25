@@ -37,9 +37,9 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'ACL_A_PRIVACY_MANAGE'	=> 'Can manage privacy options',
-	'ACL_A_PRIVACY_VIEW'	=> 'Can view user’s privacy data',
-	'ACL_U_PRIVACY_VIEW'	=> 'Can view privacy data',
+	'ACL_A_PRIVACY_MANAGE'	=> 'Può gestire le opzioni sulla privacy',
+	'ACL_A_PRIVACY_VIEW'	=> 'Può vedere i dati ptivacy di ogni utente',
+	'ACL_U_PRIVACY_VIEW'	=> 'Può vedere i propri dati privacy',
 ));
 
 ?>

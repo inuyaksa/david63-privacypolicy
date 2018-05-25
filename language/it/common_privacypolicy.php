@@ -37,19 +37,19 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'ACCEPT_DATE'		=> 'Policy acceptance date',
+	'ACCEPT_DATE'		=> 'Data accettazione policy',
 
-	'BIRTHDAY'			=> 'Birthday',
+	'BIRTHDAY'			=> 'Compleanno',
 
-	'NO_BIRTHDAY'		=> 'No birthdate entered',
-	'NO_DATA_ENTERED'	=> 'No data has been entered',
-	'NOT_ACCEPTED'		=> 'Policy has not been accepted',
+	'NO_BIRTHDAY'		=> 'Data di compleanno non inserita',
+	'NO_DATA_ENTERED'	=> 'Nessun dato inserito',
+	'NOT_ACCEPTED'		=> 'La policy non è stata accettata',
 
-	'REG_DATE'			=> 'Registration date',
-	'REG_IP'			=> 'Registration IP',
+	'REG_DATE'			=> 'Data registrazione',
+	'REG_IP'			=> 'IP registrazione',
 
 	'USERNAME'			=> 'Username',
-	'USER_IPS'			=> 'IP addresses that you have used',
+	'USER_IPS'			=> 'Indirizzi IP che hai utilizzato',
 	
-	'VERSION'			=> 'Version',
+	'VERSION'			=> 'Versione',
 ));

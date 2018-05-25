@@ -37,22 +37,22 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'ACP_USER_UTILS'			=> 'User utilities',
-	'AUTOGROUPS_TYPE_PPACCPT'	=> 'Privacy Policy accepted',
+	'ACP_USER_UTILS'			=> 'Strumenti Utente',
+	'AUTOGROUPS_TYPE_PPACCPT'	=> 'Privacy Policy accettata',
 
 	'COOKIE_POLICY'				=> 'Privacy & Cookie policy',
 
-	'POLICY_RESET_LOG'			=> '<strong>Privacy policy acceptance reset for all users</strong>',
-	'POLICY_USER_ACCEPT_LOG'	=> '<strong>Privacy policy acceptance set for user</strong><br />»» %1$s',
-	'POLICY_USER_UNSET_LOG'		=> '<strong>Privacy policy acceptance unset for user</strong><br />»» %1$s',
-	'PRIVACY_DATA'				=> 'Privacy data',
-	'PRIVACY_EDIT_CREATED'		=> 'New privacy policy created',
-	'PRIVACY_EDIT_UPDATED'		=> 'Privacy policy updated',
-	'PRIVACY_LIST'				=> 'Privacy list',
+	'POLICY_RESET_LOG'			=> '<strong>Resetta lo stato di accettazione per la Privacy policy a tutti gli utenti</strong>',
+	'POLICY_USER_ACCEPT_LOG'	=> '<strong>Imposta come accettata la Privacy policy per tutti gli utenti</strong><br />»» %1$s',
+	'POLICY_USER_UNSET_LOG'		=> '<strong>Togli accettazione Privacy policy acceptance per l\'utente</strong><br />»» %1$s',
+	'PRIVACY_DATA'				=> 'Dati Privacy',
+	'PRIVACY_EDIT_CREATED'		=> 'Creata nuova privacy policy',
+	'PRIVACY_EDIT_UPDATED'		=> 'Aggiornata la privacy policy',
+	'PRIVACY_LIST'				=> 'Lista privacy',
 	'PRIVACY_POLICY'			=> 'Privacy policy',
-	'PRIVACY_POLICY_ADD_LOG'	=> '<strong>Privacy policy added</strong>',
-	'PRIVACY_POLICY_EDIT'		=> 'Edit language data',
-	'PRIVACY_POLICY_EDIT_LOG'	=> '<strong>Privacy policy edited</strong>',
-	'PRIVACY_POLICY_LOG'		=> '<strong>Privacy policy settings updated</strong>',
-	'PRIVACY_POLICY_MANAGE'		=> 'Privacy policy settings',
+	'PRIVACY_POLICY_ADD_LOG'	=> '<strong>Aggiunta privacy policy</strong>',
+	'PRIVACY_POLICY_EDIT'		=> 'Modifica traduzione',
+	'PRIVACY_POLICY_EDIT_LOG'	=> '<strong>Modificata la privacy policy</strong>',
+	'PRIVACY_POLICY_LOG'		=> '<strong>Impostazioni privacy policy aggiornati</strong>',
+	'PRIVACY_POLICY_MANAGE'		=> 'Impostazioni privacy policy',
 ));
